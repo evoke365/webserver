@@ -28,3 +28,7 @@ func (m *Model) GetUser(id string) (*User, error) {
 	_, err := m.s.Get(id, user)
 	return user, err
 }
+
+func (m *Model) SetUser(id string, user *User) error {
+	return nil
+}
