@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -26,27 +27,34 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-
-}
-
 // Find finds the user by id.
-// returns 0 when found
-// returns 1 when not found
+// returns status code 204 if user does not exist.
+// returns status code 500 on internal errors.
+// returns valid user details on success.
 func (h *Handler) Find(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	h.intercept(w, r)
 	email := ps.ByName("name")
-	res, err := h.m.GetUser(email)
-	if err != nil {
-		h.respond500(w)
+	var user *User
+	if err := h.m.GetUser(email, user); err != nil {
+		if user == nil {
+			h.respond204(w)
+		}
+		h.respond500(w, err)
 	}
 
-	if res == nil {
-		h.respond204(w)
+	if err := h.respond200(w, user); err != nil {
+		h.respond500(w, err)
 	}
+}
 
-	if err := h.respond200(w, res); err != nil {
-		h.respond500(w)
+// Put upserts a user
+func (h *Handler) Put(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	h.intercept(w, r)
+
+	var user *User
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(user); err != nil {
+		h.respond500(w, err)
 	}
 }
 
@@ -65,7 +73,8 @@ func (h *Handler) respond200(w http.ResponseWriter, res interface{}) error {
 	return nil
 }
 
-func (h *Handler) respond500(w http.ResponseWriter) {
+func (h *Handler) respond500(w http.ResponseWriter, err error) {
+	log.Println(err.Error())
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
