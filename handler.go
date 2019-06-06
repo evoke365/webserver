@@ -1,10 +1,12 @@
 package auth
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -27,24 +29,29 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-// Find finds the user by id.
-// returns status code 204 if user does not exist.
+// Register starts registration of given user id.
 // returns status code 500 on internal errors.
-// returns valid user details on success.
-func (h *Handler) Find(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// returns 1 with code 200 on success.
+func (h *Handler) Register(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	h.intercept(w, r)
 	email := ps.ByName("name")
 	var user *User
 	if err := h.m.GetUser(email, user); err != nil {
 		if user == nil {
-			h.respond204(w)
+			// send registration email to user
 		}
 		h.respond500(w, err)
 	}
 
-	if err := h.respond200(w, user); err != nil {
+	if err := h.respond200(w, 1); err != nil {
 		h.respond500(w, err)
 	}
+}
+
+func (h *Handler) register(email string) error {
+	param := hex.EncodeToString([]byte(email))
+	// send email with url
+	return nil
 }
 
 // Put upserts a user
@@ -56,6 +63,9 @@ func (h *Handler) Put(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	if err := decoder.Decode(user); err != nil {
 		h.respond500(w, err)
 	}
+
+	user.Email = strings.ToLower(user.Email)
+
 }
 
 func (h *Handler) intercept(w http.ResponseWriter, req *http.Request) {

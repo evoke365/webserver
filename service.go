@@ -23,7 +23,7 @@ func (s *Service) Start() {
 	router := httprouter.New()
 	router.GET("/", s.handler.Index)
 	router.GET("/health", s.handler.Health)
-	router.GET("/user/:name", s.handler.Find)
+	router.GET("/user/:name", s.handler.Register)
 	router.POST("/user", s.handler.Put)
 
 	log.Printf("HTTP Server listenning on port %d", s.conf.Port)

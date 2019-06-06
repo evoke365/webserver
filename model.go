@@ -28,6 +28,10 @@ func (m *Model) GetUser(id string, user *User) error {
 	return err
 }
 
-func (m *Model) SetUser(id string, user *User) error {
+func (m *Model) AddUser(id string, user *User) error {
+	return nil
+}
+
+func (m *Model) PutUser(id string, user *User) error {
 	return nil
 }
