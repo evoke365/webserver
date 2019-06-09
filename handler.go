@@ -32,11 +32,19 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 // Register starts registration of given user id.
 // returns status code 500 on internal errors.
 // returns 1 with code 200 on success.
-func (h *Handler) Register(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	h.intercept(w, r)
-	email := ps.ByName("name")
+	obj := struct {
+		email string `json:"email"`
+	}{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&obj); err != nil {
+		h.respond500(w, err)
+	}
+
 	var user *User
-	if err := h.m.GetUser(email, user); err != nil {
+	if err := h.m.GetUser(obj.email, user); err != nil {
 		if user == nil {
 			// send registration email to user
 		}
