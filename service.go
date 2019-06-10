@@ -24,8 +24,8 @@ func (s *Service) Start() {
 	router.GET("/", s.handler.Index)
 	router.GET("/health", s.handler.Health)
 	router.POST("/user/register", s.handler.Register)
-	router.POST("/user/login", s.handler.Get)
-	router.POST("/user", s.handler.Put)
+	router.POST("/user/login", s.handler.Login)
+	router.POST("/user", s.handler.Signup)
 
 	log.Printf("HTTP Server listenning on port %d", s.conf.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.Port), router))

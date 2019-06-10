@@ -62,8 +62,8 @@ func (h *Handler) register(email string) error {
 	return nil
 }
 
-// Get handles endpoint /user/login
-func (h *Handler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// login handles endpoint /user/login
+func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	h.intercept(w, r)
 	obj := struct {
 		email    string `json:"email"`
@@ -75,10 +75,15 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 		h.respond500(w, err)
 	}
 
+	var user *User
+	if err := h.m.GetUserByCredentials(obj.email, obj.password, user); err != nil {
+		h.respond500(w, err)
+	}
+
 }
 
-// Put upserts a user
-func (h *Handler) Put(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// Signup handles endpoint /user/Signup
+func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	h.intercept(w, r)
 
 	var user *User
