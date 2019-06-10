@@ -24,6 +24,7 @@ func (s *Service) Start() {
 	router.GET("/", s.handler.Index)
 	router.GET("/health", s.handler.Health)
 	router.POST("/user/register", s.handler.Register)
+	router.POST("/user/login", s.handler.Get)
 	router.POST("/user", s.handler.Put)
 
 	log.Printf("HTTP Server listenning on port %d", s.conf.Port)
@@ -35,9 +36,9 @@ func (s *Service) Stop() {
 	log.Println("Shutting down...")
 }
 
-func NewService(c Config, s Store) *Service {
+func NewService(c Config, m Model) *Service {
 	return &Service{
 		conf:    c,
-		handler: NewHandler(s),
+		handler: NewHandler(m),
 	}
 }

@@ -2,8 +2,11 @@ package auth
 
 import "time"
 
-type Model struct {
-	s Store
+type Model interface {
+	GetUser(id string, user *User) error
+	GetUserByCredentials(email, password string, user *User) error
+	AddUser(id string, user *User) error
+	PutUser(id string, user *User) error
 }
 
 type User struct {
@@ -15,23 +18,4 @@ type User struct {
 	Ip       string
 	Created  time.Time
 	Modified time.Time
-}
-
-func NewModel(s Store) *Model {
-	return &Model{
-		s: s,
-	}
-}
-
-func (m *Model) GetUser(id string, user *User) error {
-	_, err := m.s.Get(id, user)
-	return err
-}
-
-func (m *Model) AddUser(id string, user *User) error {
-	return nil
-}
-
-func (m *Model) PutUser(id string, user *User) error {
-	return nil
 }

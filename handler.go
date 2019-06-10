@@ -12,12 +12,12 @@ import (
 )
 
 type Handler struct {
-	m *Model
+	m Model
 }
 
-func NewHandler(s Store) *Handler {
+func NewHandler(m Model) *Handler {
 	return &Handler{
-		m: NewModel(s),
+		m: m,
 	}
 }
 
@@ -60,6 +60,21 @@ func (h *Handler) register(email string) error {
 	param := hex.EncodeToString([]byte(email))
 	// send email with url
 	return nil
+}
+
+// Get handles endpoint /user/login
+func (h *Handler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	h.intercept(w, r)
+	obj := struct {
+		email    string `json:"email"`
+		password string `json:"password"`
+	}{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&obj); err != nil {
+		h.respond500(w, err)
+	}
+
 }
 
 // Put upserts a user
