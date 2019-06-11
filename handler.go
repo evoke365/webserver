@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -80,20 +81,43 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		h.respond500(w, err)
 	}
 
+	if user != nil {
+		h.respond200(w, user)
+	}
+
+	h.respond404(w)
 }
 
 // Signup handles endpoint /user/Signup
 func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	h.intercept(w, r)
 
-	var user *User
+	obj := struct {
+		email    string `json:"email"`
+		password string `json:"password"`
+		timezone int    `json:"timezone"`
+	}{}
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(user); err != nil {
+	if err := decoder.Decode(&obj); err != nil {
 		h.respond500(w, err)
 	}
 
-	user.Email = strings.ToLower(user.Email)
+	user := &User{}
+	user.Email = strings.ToLower(obj.email)
+	user.Password = h.getMD5Hash(obj.password)
+	user.Timezone = obj.timezone
 
+	if err := h.m.InsertUser(user); err != nil {
+		h.respond500(w, err)
+	}
+
+	h.respond200(w, "")
+}
+
+func (h *Handler) getMD5Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func (h *Handler) intercept(w http.ResponseWriter, req *http.Request) {
@@ -118,4 +142,8 @@ func (h *Handler) respond500(w http.ResponseWriter, err error) {
 
 func (h *Handler) respond204(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) respond404(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNotFound)
 }
