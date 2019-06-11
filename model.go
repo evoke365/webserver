@@ -10,12 +10,11 @@ type Model interface {
 }
 
 type User struct {
-	Email    string
-	Password string
-	Token    string
-	Location string
-	Timezone int
-	Ip       string
-	Created  time.Time
-	Modified time.Time
+	Email       string
+	Password    string
+	Timezone    int
+	Token       string
+	TokenExpiry time.Time
+	Created     time.Time
+	Modified    time.Time
 }
