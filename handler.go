@@ -41,7 +41,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&obj); err != nil {
-		h.respond500(w, err)
+		respond500(w, err)
 	}
 
 	var user *User
@@ -49,11 +49,11 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 		if user == nil {
 			// send registration email to user
 		}
-		h.respond500(w, err)
+		respond500(w, err)
 	}
 
-	if err := h.respond200(w, 1); err != nil {
-		h.respond500(w, err)
+	if err := respond200(w, 1); err != nil {
+		respond500(w, err)
 	}
 }
 
@@ -73,19 +73,19 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&obj); err != nil {
-		h.respond500(w, err)
+		respond500(w, err)
 	}
 
 	var user *User
 	if err := h.m.GetUserByCredentials(obj.email, obj.password, user); err != nil {
-		h.respond500(w, err)
+		respond500(w, err)
 	}
 
 	if user != nil {
-		h.respond200(w, user)
+		respond200(w, user)
 	}
 
-	h.respond404(w)
+	respond404(w)
 }
 
 // Signup handles endpoint /user/Signup
@@ -99,32 +99,26 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}{}
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&obj); err != nil {
-		h.respond500(w, err)
+		respond500(w, err)
 	}
 
 	user := &User{}
 	user.Email = strings.ToLower(obj.email)
-	user.Password = h.getMD5Hash(obj.password)
+	user.Password = getMD5Hash(obj.password)
 	user.Timezone = obj.timezone
 
 	if err := h.m.InsertUser(user); err != nil {
-		h.respond500(w, err)
+		respond500(w, err)
 	}
 
-	h.respond200(w, "")
+	respond200(w, "")
 }
 
-func (h *Handler) getMD5Hash(text string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
-}
-
-func (h *Handler) intercept(w http.ResponseWriter, req *http.Request) {
+func intercept(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
-func (h *Handler) respond200(w http.ResponseWriter, res interface{}) error {
+func respond200(w http.ResponseWriter, res interface{}) error {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 
@@ -135,15 +129,21 @@ func (h *Handler) respond200(w http.ResponseWriter, res interface{}) error {
 	return nil
 }
 
-func (h *Handler) respond500(w http.ResponseWriter, err error) {
+func respond500(w http.ResponseWriter, err error) {
 	log.Println(err.Error())
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-func (h *Handler) respond204(w http.ResponseWriter) {
+func respond204(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h *Handler) respond404(w http.ResponseWriter) {
+func respond404(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNotFound)
+}
+
+func getMD5Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
