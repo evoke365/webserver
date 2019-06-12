@@ -34,7 +34,7 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 // returns status code 500 on internal errors.
 // returns 1 with code 200 on success.
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	h.intercept(w, r)
+	intercept(w, r)
 	obj := struct {
 		email string `json:"email"`
 	}{}
@@ -65,7 +65,7 @@ func (h *Handler) register(email string) error {
 
 // login handles endpoint /user/login
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	h.intercept(w, r)
+	intercept(w, r)
 	obj := struct {
 		email    string `json:"email"`
 		password string `json:"password"`
@@ -90,7 +90,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 // Signup handles endpoint /user/Signup
 func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	h.intercept(w, r)
+	intercept(w, r)
 
 	obj := struct {
 		email    string `json:"email"`
