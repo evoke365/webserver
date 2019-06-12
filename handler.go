@@ -9,16 +9,19 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/jacygao/mail"
 	"github.com/julienschmidt/httprouter"
 )
 
 type Handler struct {
-	m Model
+	model  Model
+	mailer *mail.Service
 }
 
-func NewHandler(m Model) *Handler {
+func NewHandler(model Model, mailer *mail.Service) *Handler {
 	return &Handler{
-		m: m,
+		model:  model,
+		mailer: mailer,
 	}
 }
 
@@ -45,7 +48,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	var user *User
-	if err := h.m.GetUser(obj.email, user); err != nil {
+	if err := h.model.GetUser(obj.email, user); err != nil {
 		if user == nil {
 			// send registration email to user
 		}
@@ -60,6 +63,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 func (h *Handler) register(email string) error {
 	param := hex.EncodeToString([]byte(email))
 	// send email with url
+
 	return nil
 }
 
@@ -77,7 +81,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 
 	var user *User
-	if err := h.m.GetUserByCredentials(obj.email, obj.password, user); err != nil {
+	if err := h.model.GetUserByCredentials(obj.email, obj.password, user); err != nil {
 		respond500(w, err)
 	}
 
@@ -107,7 +111,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	user.Password = getMD5Hash(obj.password)
 	user.Timezone = obj.timezone
 
-	if err := h.m.InsertUser(user); err != nil {
+	if err := h.model.InsertUser(user); err != nil {
 		respond500(w, err)
 	}
 
