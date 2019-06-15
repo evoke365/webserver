@@ -32,24 +32,16 @@ func (db *MongoDb) withCollection(f func(c *mgo.Collection) error) error {
 	return f(c)
 }
 
-func (db *MongoDb) Get(key string, valuePtr interface{}) (uint64, error) {
-	db.withCollection(func(c *mgo.Collection) error {
-		if err := c.Find(bson.M{"_id": bson.ObjectIdHex(key)}).One(valuePtr); err != nil {
+func (db *MongoDb) GetUser(email string, user *User) error {
+	if err :=db.withCollection(func(c *mgo.Collection) error {
+		if err := c.Find(bson.M{"email": email}).One(&user); err != nil {
 			return err
 		}
 		return nil
-	})
-	return 0, nil
-}
-
-func (db *MongoDb) Upsert(key string, value interface{}, expiry uint32) (uint64, error) {
-	db.withCollection(func(c *mgo.Collection) error {
-		if _, err := c.UpsertId(bson.M{"_id": bson.ObjectIdHex(key)}, value); err != nil {
-			return err
-		}
-		return nil
-	})
-	return 0, nil
+	}); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (db *MongoDb) InsertUser(user *User) (string, error) {
