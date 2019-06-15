@@ -7,11 +7,12 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/jacygao/mail"
 	"github.com/julienschmidt/httprouter"
 )
 
 type Config struct {
-	Port int
+	HttpPort int
 }
 
 type Service struct {
@@ -27,8 +28,8 @@ func (s *Service) Start() {
 	router.POST("/user/login", s.handler.Login)
 	router.POST("/user", s.handler.Signup)
 
-	log.Printf("HTTP Server listenning on port %d", s.conf.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.Port), router))
+	log.Printf("HTTP Server listenning on port %d", s.conf.HttpPort)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HttpPort), router))
 }
 
 func (s *Service) Stop() {
@@ -37,8 +38,11 @@ func (s *Service) Stop() {
 }
 
 func NewService(c Config, m Model) *Service {
+	mailer := mail.NewService(mail.Config{
+
+	})
 	return &Service{
 		conf:    c,
-		handler: NewHandler(m),
+		handler: NewHandler(m, mailer),
 	}
 }
