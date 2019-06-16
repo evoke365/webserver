@@ -115,13 +115,19 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	user.Password = getMD5Hash(obj.Password)
 	user.Timezone = obj.Timezone
 
-	if err := h.model.InsertUser(user); err != nil {
+	tok, err := h.model.InsertUser(user)
+	if err != nil {
 		respond500(w, err)
 	}
-
-	respond200(w, "")
+	res := struct {
+		Token string `json:"token"`
+	}{
+		tok,
+	}
+	respond200(w, res)
 }
 
+// TODO: implement config driven CORS
 func intercept(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
