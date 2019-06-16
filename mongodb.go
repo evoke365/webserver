@@ -10,14 +10,14 @@ import (
 
 const defaultExpirySec = 60 * 60 * 24
 
-type MongoDb struct {
+type MongoDB struct {
 	session    *mgo.Session
 	name       string
 	collection string
 }
 
-func NewMongoDb(s *mgo.Session, name, collection string) (*MongoDb, error) {
-	return &MongoDb{
+func NewMongoDB(s *mgo.Session, name, collection string) (*MongoDB, error) {
+	return &MongoDB{
 		session:    s,
 		name:       name,
 		collection: collection,
@@ -25,14 +25,14 @@ func NewMongoDb(s *mgo.Session, name, collection string) (*MongoDb, error) {
 }
 
 // Ensure closure of mongo db session.
-func (db *MongoDb) withCollection(f func(c *mgo.Collection) error) error {
+func (db *MongoDB) withCollection(f func(c *mgo.Collection) error) error {
 	s := db.session.Copy()
 	defer s.Close()
 	c := s.DB(db.name).C(db.collection)
 	return f(c)
 }
 
-func (db *MongoDb) GetUser(email string, user *User) error {
+func (db *MongoDB) GetUser(email string, user *User) error {
 	if err :=db.withCollection(func(c *mgo.Collection) error {
 		if err := c.Find(bson.M{"email": email}).One(&user); err != nil {
 			return err
@@ -44,7 +44,7 @@ func (db *MongoDb) GetUser(email string, user *User) error {
 	return nil
 }
 
-func (db *MongoDb) InsertUser(user *User) (string, error) {
+func (db *MongoDB) InsertUser(user *User) (string, error) {
 	now := time.Now()
 	tok := newToken()
 	if err := db.withCollection(func(c *mgo.Collection) error {

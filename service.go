@@ -4,6 +4,7 @@ package auth
 
 import (
 	"fmt"
+	"gopkg.in/mgo.v2"
 	"log"
 	"net/http"
 
@@ -12,7 +13,8 @@ import (
 )
 
 type Config struct {
-	HttpPort int
+	HttpPort    int
+	RedirectUri string
 }
 
 type Service struct {
@@ -26,7 +28,7 @@ func (s *Service) Start() {
 	router.GET("/health", s.handler.Health)
 	router.POST("/user/register", s.handler.Register)
 	router.POST("/user/login", s.handler.Login)
-	router.POST("/user", s.handler.Signup)
+	router.POST("/user/signup", s.handler.Signup)
 
 	log.Printf("HTTP Server listenning on port %d", s.conf.HttpPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HttpPort), router))
@@ -37,12 +39,18 @@ func (s *Service) Stop() {
 	log.Println("Shutting down...")
 }
 
-func NewService(c Config, m Model) *Service {
-	mailer := mail.NewService(mail.Config{
+func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) error {
+	model, err := NewMongoDB(session, dbName, collection)
+	if err != nil {
+		return err
+	}
+	mailer := mail.NewService(mail.Config{})
+	s.handler = NewHandler(model, mailer)
+	return nil
+}
 
-	})
+func NewService(c Config) *Service {
 	return &Service{
 		conf:    c,
-		handler: NewHandler(m, mailer),
 	}
 }

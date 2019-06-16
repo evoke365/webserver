@@ -4,9 +4,7 @@ import "time"
 
 type Model interface {
 	GetUser(id string, user *User) error
-	GetUserByCredentials(email, password string, user *User) error
-	InsertUser(user *User) error
-	PutUser(id string, user *User) error
+	InsertUser(user *User) (string, error)
 }
 
 type User struct {

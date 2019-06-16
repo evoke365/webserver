@@ -33,9 +33,7 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-// Register starts registration of given user id.
-// returns status code 500 on internal errors.
-// returns 1 with code 200 on success.
+// Register handles endpoint /user/register
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 	obj := struct {
@@ -81,18 +79,24 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 
 	var user *User
-	if err := h.model.GetUserByCredentials(obj.Email, obj.Password, user); err != nil {
+	if err := h.model.GetUser(obj.Email, user); err != nil {
 		respond500(w, err)
 	}
-
-	if user != nil {
-		respond200(w, user)
+	if user == nil {
+		respond404(w)
 	}
-
-	respond404(w)
+	if user.Password == getMD5Hash(obj.Password) {
+		res := struct {
+			Token string `json:"token"`
+		}{
+			user.Token,
+		}
+		respond200(w, res)
+	}
+	respond401(w)
 }
 
-// Signup handles endpoint /user/Signup
+// Signup handles endpoint /user/signup
 func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 
@@ -140,6 +144,10 @@ func respond500(w http.ResponseWriter, err error) {
 
 func respond204(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func respond401(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusUnauthorized)
 }
 
 func respond404(w http.ResponseWriter) {
