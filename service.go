@@ -7,12 +7,16 @@ import (
 	"log"
 	"net/http"
 
+	"gopkg.in/mgo.v2"
+
+	"github.com/jacygao/mail"
 	"github.com/julienschmidt/httprouter"
 )
 
 type Config struct {
-	AdminEmail string
-	Port       int
+	AdminEmail  string
+	HttpPort    int
+	RedirectUri string
 }
 
 type Service struct {
@@ -26,10 +30,10 @@ func (s *Service) Start() {
 	router.GET("/health", s.handler.Health)
 	router.POST("/user/register", s.handler.Register)
 	router.POST("/user/login", s.handler.Login)
-	router.POST("/user", s.handler.Signup)
+	router.POST("/user/signup", s.handler.Signup)
 
-	log.Printf("HTTP Server listenning on port %d", s.conf.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.Port), router))
+	log.Printf("HTTP Server listenning on port %d", s.conf.HttpPort)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HttpPort), router))
 }
 
 func (s *Service) Stop() {
@@ -37,9 +41,18 @@ func (s *Service) Stop() {
 	log.Println("Shutting down...")
 }
 
-func NewService(c Config, m Model) *Service {
+func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) error {
+	model, err := NewMongoDB(session, dbName, collection)
+	if err != nil {
+		return err
+	}
+	mailer := mail.NewService(mail.Config{})
+	s.handler = NewHandler(model, mailer)
+	return nil
+}
+
+func NewService(c Config) *Service {
 	return &Service{
-		conf:    c,
-		handler: NewHandler(m),
+		conf: c,
 	}
 }

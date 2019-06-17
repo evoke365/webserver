@@ -34,13 +34,11 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-// Register starts registration of given user id.
-// returns status code 500 on internal errors.
-// returns 1 with code 200 on success.
+// Register handles endpoint /user/register
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 	obj := struct {
-		email string `json:"email"`
+		Email string `json:"email"`
 	}{}
 
 	decoder := json.NewDecoder(r.Body)
@@ -49,7 +47,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	var user *User
-	if err := h.model.GetUser(obj.email, user); err != nil {
+	if err := h.model.GetUser(obj.Email, user); err != nil {
 		if user == nil {
 			// send registration email to user
 		}
@@ -78,8 +76,8 @@ func (h *Handler) register(email string) error {
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 	obj := struct {
-		email    string `json:"email"`
-		password string `json:"password"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}{}
 
 	decoder := json.NewDecoder(r.Body)
@@ -88,25 +86,31 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 
 	var user *User
-	if err := h.model.GetUserByCredentials(obj.email, obj.password, user); err != nil {
+	if err := h.model.GetUser(obj.Email, user); err != nil {
 		respond500(w, err)
 	}
-
-	if user != nil {
-		respond200(w, user)
+	if user == nil {
+		respond404(w)
 	}
-
-	respond404(w)
+	if user.Password == getMD5Hash(obj.Password) {
+		res := struct {
+			Token string `json:"token"`
+		}{
+			user.Token,
+		}
+		respond200(w, res)
+	}
+	respond401(w)
 }
 
-// Signup handles endpoint /user/Signup
+// Signup handles endpoint /user/signup
 func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 
 	obj := struct {
-		email    string `json:"email"`
-		password string `json:"password"`
-		timezone int    `json:"timezone"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Timezone int    `json:"timezone"`
 	}{}
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&obj); err != nil {
@@ -114,17 +118,23 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 
 	user := &User{}
-	user.Email = strings.ToLower(obj.email)
-	user.Password = getMD5Hash(obj.password)
-	user.Timezone = obj.timezone
+	user.Email = strings.ToLower(obj.Email)
+	user.Password = getMD5Hash(obj.Password)
+	user.Timezone = obj.Timezone
 
-	if err := h.model.InsertUser(user); err != nil {
+	tok, err := h.model.InsertUser(user)
+	if err != nil {
 		respond500(w, err)
 	}
-
-	respond200(w, "")
+	res := struct {
+		Token string `json:"token"`
+	}{
+		tok,
+	}
+	respond200(w, res)
 }
 
+// TODO: implement config driven CORS
 func intercept(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
@@ -147,6 +157,10 @@ func respond500(w http.ResponseWriter, err error) {
 
 func respond204(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func respond401(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusUnauthorized)
 }
 
 func respond404(w http.ResponseWriter) {
