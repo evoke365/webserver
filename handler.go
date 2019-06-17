@@ -14,6 +14,7 @@ import (
 )
 
 type Handler struct {
+	conf   Config
 	model  Model
 	mailer *mail.Service
 }
@@ -65,6 +66,12 @@ func (h *Handler) register(email string) error {
 	// send email with url
 
 	return nil
+	msg := mail.NewMessage()
+	msg.SetHeader(h.conf.AdminEmail, email)
+	msg.SetSubject("Subject: Welcome to Studybox \r\n")
+	msg.SetMime(mail.ContentTypeHTML())
+	// TODO: handle templating
+	return h.mailer.Send(email, msg)
 }
 
 // login handles endpoint /user/login

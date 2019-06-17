@@ -11,7 +11,8 @@ import (
 )
 
 type Config struct {
-	Port int
+	AdminEmail string
+	Port       int
 }
 
 type Service struct {
