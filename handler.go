@@ -50,25 +50,26 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 	if err := h.model.GetUser(obj.Email, user); err != nil {
 		if user == nil {
 			// send registration email to user
+			if err := h.register(obj.Email); err != nil {
+				respond500(w, err)
+			}
+			respond200(w, 1)
 		}
 		respond500(w, err)
 	}
 
-	if err := respond200(w, 1); err != nil {
+	if err := respond200(w, 0); err != nil {
 		respond500(w, err)
 	}
 }
 
 func (h *Handler) register(email string) error {
 	param := hex.EncodeToString([]byte(email))
-	// send email with url
-
-	return nil
 	msg := mail.NewMessage()
 	msg.SetHeader(h.conf.AdminEmail, email)
 	msg.SetSubject("Subject: Welcome to Studybox \r\n")
 	msg.SetMime(mail.ContentTypeHTML())
-	// TODO: handle templating
+	msg.SetHTMLTemplate(h.conf.PasswordEmailFilePath, h.conf.PasswordEmailFileName, param)
 	return h.mailer.Send(email, msg)
 }
 

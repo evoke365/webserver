@@ -3,6 +3,7 @@
 package auth
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,13 +15,16 @@ import (
 )
 
 type Config struct {
-	AdminEmail  string
-	HttpPort    int
-	RedirectUri string
+	HttpPort              int
+	AdminEmail            string
+	RedirectUri           string
+	PasswordEmailFilePath string
+	PasswordEmailFileName string
 }
 
 type Service struct {
 	conf    Config
+	mailer  *mail.Service
 	handler *Handler
 }
 
@@ -41,14 +45,21 @@ func (s *Service) Stop() {
 	log.Println("Shutting down...")
 }
 
-func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) error {
+func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) (*Service, error) {
 	model, err := NewMongoDB(session, dbName, collection)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	mailer := mail.NewService(mail.Config{})
-	s.handler = NewHandler(model, mailer)
-	return nil
+	if s.mailer == nil {
+		return nil, errors.New("you must call withMailer first")
+	}
+	s.handler = NewHandler(model, s.mailer)
+	return s, nil
+}
+
+func (s *Service) WithMailer(ms *mail.Service) *Service {
+	s.mailer = ms
+	return s
 }
 
 func NewService(c Config) *Service {
