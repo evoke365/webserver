@@ -30,8 +30,8 @@ type Service struct {
 
 func (s *Service) Start() {
 	router := httprouter.New()
-	router.GET("/", s.handler.Index)
 	router.GET("/health", s.handler.Health)
+	router.GET("/redirect/:code", s.handler.Redirect)
 	router.POST("/user/register", s.handler.Register)
 	router.POST("/user/login", s.handler.Login)
 	router.POST("/user/signup", s.handler.Signup)

@@ -30,8 +30,24 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	fmt.Fprintf(w, "Auth service is up and running")
 }
 
-func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!\n")
+func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	intercept(w, r)
+	param := ps.ByName("code")
+	if len(param) == 0 {
+		respond404(w)
+	}
+
+	mailBytes, err := hex.DecodeString(param)
+	if err != nil {
+		respond500(w, err)
+	}
+
+	var user *User
+	if err := h.model.GetUser(string(mailBytes), user); err != nil {
+		respond500(w, err)
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("http://www.google.com/%s", user.Email), 301)
 }
 
 // Register handles endpoint /user/register
