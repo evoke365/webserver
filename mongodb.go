@@ -8,7 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-const defaultExpirySec = 60 * 60 * 24
+const defaultTokenExpirySec = 60 * 60 * 24
 
 type MongoDB struct {
 	session    *mgo.Session
@@ -33,7 +33,7 @@ func (db *MongoDB) withCollection(f func(c *mgo.Collection) error) error {
 }
 
 func (db *MongoDB) GetUser(email string, user *User) error {
-	if err :=db.withCollection(func(c *mgo.Collection) error {
+	if err := db.withCollection(func(c *mgo.Collection) error {
 		if err := c.Find(bson.M{"email": email}).One(&user); err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 				"email":       user.Email,
 				"password":    user.Password,
 				"token":       tok,
-				"tokenExpiry": now.Add(time.Second * defaultExpirySec),
+				"tokenExpiry": now.Add(time.Second * defaultTokenExpirySec),
 				"timezone":    user.Timezone,
 				"created":     now,
 				"modified":    now,
