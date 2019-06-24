@@ -1,0 +1,10 @@
+github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
+github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/jacygao/crud v0.0.0-20190530131604-57e3be266f04 h1:aUcHFnRpimI10be9uYkWj7+UPgyFXoaufKA3ERraiVA=
+github.com/jacygao/crud v0.0.0-20190530131604-57e3be266f04/go.mod h1:XPjhED0E8jVajO+7+JfCe+pwmRk/tf8nq7G9bl7WgCo=
+github.com/jacygao/mail v0.0.0-20190623115601-acb168198260 h1:zDlPf2S/xkdZJtXNuQha18p+L1C7DNI3j4etuVkRclE=
+github.com/jacygao/mail v0.0.0-20190623115601-acb168198260/go.mod h1:eAy3eQm2UkEBuJyKzUe/KodpJrUYLTwzPVqnUI1iRUM=
+github.com/julienschmidt/httprouter v1.2.0 h1:TDTW5Yz1mjftljbcKqRcrYhd4XeOoI98t+9HbQbYf7g=
+github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
+gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce h1:xcEWjVhvbDy+nHP67nPDDpbYrY+ILlfndk4bRioVHaU=
+gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce/go.mod h1:yeKp02qBN3iKW1OzL3MGk2IdtZzaj7SFntXj72NppTA=
