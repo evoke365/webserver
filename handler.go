@@ -53,7 +53,7 @@ func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request, ps httprouter
 		respond500(w, err)
 		return
 	}
-
+	// TODO: check url code expiry
 	// TODO: checking and formatting uri string
 	http.Redirect(w, r, fmt.Sprintf("%s/%s", h.conf.RedirectURI, user.Email), 301)
 }
