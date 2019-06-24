@@ -13,44 +13,52 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// Handler defines Handler instance and its dependencies.
 type Handler struct {
 	conf   Config
 	model  Model
-	mailer *mail.Service
+	mailer mail.Mailer
 }
 
-func NewHandler(model Model, mailer *mail.Service) *Handler {
+// NewHandler returns a new Handler instance.
+func NewHandler(model Model, mailer mail.Mailer) *Handler {
 	return &Handler{
 		model:  model,
 		mailer: mailer,
 	}
 }
 
+// Health handles endpoint /health.
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "Auth service is up and running")
 }
 
+// Redirect handles endpoint /user/redirect/:code.
 func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	intercept(w, r)
 	param := ps.ByName("code")
 	if len(param) == 0 {
 		respond404(w)
+		return
 	}
 
 	mailBytes, err := hex.DecodeString(param)
 	if err != nil {
 		respond500(w, err)
+		return
 	}
 
 	var user *User
 	if err := h.model.GetUser(string(mailBytes), user); err != nil {
 		respond500(w, err)
+		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("http://www.google.com/%s", user.Email), 301)
+	// TODO: checking and formatting uri string
+	http.Redirect(w, r, fmt.Sprintf("%s/%s", h.conf.RedirectURI, user.Email), 301)
 }
 
-// Register handles endpoint /user/register
+// Register handles endpoint /user/register.
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 	obj := struct {
@@ -60,6 +68,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&obj); err != nil {
 		respond500(w, err)
+		return
 	}
 
 	var user *User
@@ -68,14 +77,18 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 			// send registration email to user
 			if err := h.register(obj.Email); err != nil {
 				respond500(w, err)
+				return
 			}
 			respond200(w, 1)
+			return
 		}
 		respond500(w, err)
+		return
 	}
 
 	if err := respond200(w, 0); err != nil {
 		respond500(w, err)
+		return
 	}
 }
 
@@ -89,7 +102,7 @@ func (h *Handler) register(email string) error {
 	return h.mailer.Send(email, msg)
 }
 
-// login handles endpoint /user/login
+// Login handles endpoint /user/login.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 	obj := struct {
@@ -100,14 +113,17 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&obj); err != nil {
 		respond500(w, err)
+		return
 	}
 
 	var user *User
 	if err := h.model.GetUser(obj.Email, user); err != nil {
 		respond500(w, err)
+		return
 	}
 	if user == nil {
 		respond404(w)
+		return
 	}
 	if user.Password == getMD5Hash(obj.Password) {
 		res := struct {
@@ -116,11 +132,13 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 			user.Token,
 		}
 		respond200(w, res)
+		return
 	}
 	respond401(w)
+	return
 }
 
-// Signup handles endpoint /user/signup
+// Signup handles endpoint /user/signup.
 func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
 
@@ -132,6 +150,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&obj); err != nil {
 		respond500(w, err)
+		return
 	}
 
 	user := &User{}
@@ -142,6 +161,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	tok, err := h.model.InsertUser(user)
 	if err != nil {
 		respond500(w, err)
+		return
 	}
 	res := struct {
 		Token string `json:"token"`
@@ -149,9 +169,10 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		tok,
 	}
 	respond200(w, res)
+	return
 }
 
-// TODO: implement config driven CORS
+// TODO: implement config driven CORS.
 func intercept(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 }

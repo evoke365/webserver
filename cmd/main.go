@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/jacygao/mail"
 	"github.com/studybox/auth"
 )
@@ -13,6 +15,7 @@ func newFakeMailer() *fakeMailer {
 }
 
 func (fm *fakeMailer) Send(to string, msg mail.Message) error {
+	log.Printf("sending email to %s with message %v", to, msg)
 	return nil
 }
 
