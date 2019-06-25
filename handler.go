@@ -103,20 +103,16 @@ func (h *Handler) register(email string) error {
 }
 
 // TODO: Implement /user/:id endpoint
-func (h *Handler) User(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	intercept(w, r)
-	obj := struct {
-		Email string `json:"email"`
-	}{}
-
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&obj); err != nil {
-		respond500(w, err)
+	param := ps.ByName("id")
+	if len(param) == 0 {
+		respond404(w)
 		return
 	}
 
 	var user *User
-	if err := h.model.GetUser(obj.Email, user); err != nil {
+	if err := h.model.GetUser(param, user); err != nil {
 		respond500(w, err)
 		return
 	}
