@@ -73,23 +73,23 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 
 	var user *User
 	if err := h.model.GetUser(obj.Email, user); err != nil {
-		if user == nil {
-			// send registration email to user
-			if err := h.register(obj.Email); err != nil {
-				respond500(w, err)
-				return
-			}
-			respond200(w, 1)
-			return
-		}
 		respond500(w, err)
 		return
 	}
 
-	if err := respond200(w, 0); err != nil {
+	if user == nil {
+		// send registration email to user
+		if err := h.register(obj.Email); err != nil {
+			respond500(w, err)
+			return
+		}
+	}
+
+	if err := respond200(w, 1); err != nil {
 		respond500(w, err)
 		return
 	}
+	return
 }
 
 func (h *Handler) register(email string) error {
@@ -100,6 +100,33 @@ func (h *Handler) register(email string) error {
 	msg.SetMime(mail.ContentTypeHTML())
 	msg.SetHTMLTemplate(h.conf.PasswordEmailFilePath, h.conf.PasswordEmailFileName, param)
 	return h.mailer.Send(email, msg)
+}
+
+// TODO: Implement /user/:id endpoint
+func (h *Handler) User(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	intercept(w, r)
+	obj := struct {
+		Email string `json:"email"`
+	}{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&obj); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	var user *User
+	if err := h.model.GetUser(obj.Email, user); err != nil {
+		respond500(w, err)
+		return
+	}
+	if user == nil {
+		respond204(w)
+		return
+	}
+	respond200(w, 1)
+	return
+
 }
 
 // Login handles endpoint /user/login.
