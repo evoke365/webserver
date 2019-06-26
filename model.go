@@ -5,6 +5,7 @@ import "time"
 type Model interface {
 	GetUser(id string, user *User) error
 	InsertUser(user *User) (string, error)
+	IsErrNotFound(err error) bool
 }
 
 type User struct {

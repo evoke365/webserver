@@ -2,12 +2,15 @@ package auth
 
 import (
 	"time"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/jacygao/crud"
 )
 
 const memoryDBExpirySec = 60 * 60 * 24
+
+var errNotFound = errors.New("not found")
 
 // MemoryDB defines instance structure and dependencies.
 type MemoryDB struct {
@@ -26,6 +29,9 @@ func (db *MemoryDB) GetUser(id string, user *User) error {
 	if _, err := db.store.Get(id, user); err != nil {
 		return err
 	}
+	if user == nil {
+		return errNotFound
+	}
 	return nil
 }
 
@@ -42,4 +48,8 @@ func (db *MemoryDB) InsertUser(user *User) (string, error) {
 		return "", err
 	}
 	return tok, nil
+}
+
+func (db *MemoryDB) IsErrNotFound(err error) bool {
+	return err == errNotFound
 }

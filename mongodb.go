@@ -68,6 +68,10 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 	return tok, nil
 }
 
+func (db *MongoDB) IsErrNotFound(err error) bool {
+	return err == mgo.ErrNotFound
+}
+
 func newToken() string {
 	return uuid.New().String()
 }

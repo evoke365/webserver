@@ -172,6 +172,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 
 // TODO: implement config driven CORS.
 func intercept(w http.ResponseWriter, req *http.Request) {
+	log.Printf("Incoming request: %v", req)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
