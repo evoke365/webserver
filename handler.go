@@ -58,38 +58,29 @@ func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request, ps httprouter
 	http.Redirect(w, r, fmt.Sprintf("%s/%s", h.conf.RedirectURI, user.Email), 301)
 }
 
-// Register handles endpoint /user/register.
-func (h *Handler) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// TODO: Implement /user/:id endpoint
+func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	intercept(w, r)
-	obj := struct {
-		Email string `json:"email"`
-	}{}
-
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&obj); err != nil {
-		respond500(w, err)
+	param := ps.ByName("id")
+	if len(param) == 0 {
+		respond404(w)
 		return
 	}
 
 	var user *User
-	if err := h.model.GetUser(obj.Email, user); err != nil {
+	if err := h.model.GetUser(param, user); err != nil {
 		respond500(w, err)
 		return
 	}
-
 	if user == nil {
-		// send registration email to user
-		if err := h.register(obj.Email); err != nil {
+		if err := h.register(param); err != nil {
 			respond500(w, err)
 			return
 		}
 	}
-
-	if err := respond200(w, 1); err != nil {
-		respond500(w, err)
-		return
-	}
+	respond200(w, 1)
 	return
+
 }
 
 func (h *Handler) register(email string) error {
@@ -107,29 +98,6 @@ func (h *Handler) register(email string) error {
 	msg.SetHTMLTemplate(h.conf.PasswordEmailFilePath, h.conf.PasswordEmailFileName, templateData)
 
 	return h.mailer.Send(email, msg)
-}
-
-// TODO: Implement /user/:id endpoint
-func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	intercept(w, r)
-	param := ps.ByName("id")
-	if len(param) == 0 {
-		respond404(w)
-		return
-	}
-
-	var user *User
-	if err := h.model.GetUser(param, user); err != nil {
-		respond500(w, err)
-		return
-	}
-	if user == nil {
-		respond204(w)
-		return
-	}
-	respond200(w, 1)
-	return
-
 }
 
 // Login handles endpoint /user/login.
