@@ -69,10 +69,10 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 	var user *User
 	if err := h.model.GetUser(param, user); err != nil {
-		respond500(w, err)
-		return
-	}
-	if user == nil {
+		if !h.model.IsErrNotFound(err) {
+			respond500(w, err)
+			return
+		}
 		if err := h.register(param); err != nil {
 			respond500(w, err)
 			return
