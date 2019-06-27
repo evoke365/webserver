@@ -16,6 +16,7 @@ import (
 // Config defines configuration variables.
 type Config struct {
 	HTTPPort              int
+	RedirectURI           string
 }
 
 // Service defines Auth Service instance structure and dependecies.
