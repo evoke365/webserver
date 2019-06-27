@@ -48,14 +48,15 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 
-	var user *User
-	if err := h.model.GetUser(string(mailBytes), user); err != nil {
-		respond500(w, err)
-		return
-	}
 	// TODO: check url code expiry
 	// TODO: checking and formatting uri string
-	http.Redirect(w, r, fmt.Sprintf("%s/%s", h.conf.RedirectURI, user.Email), 301)
+
+	res := struct {
+		Email string `json:"email"`
+	}{
+		Email: string(mailBytes),
+	}
+	respond200(w, res)
 }
 
 // User handles endpoint /user/find/:id
