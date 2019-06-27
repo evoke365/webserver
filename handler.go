@@ -85,19 +85,7 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 func (h *Handler) register(email string) error {
 	param := hex.EncodeToString([]byte(email))
-	msg := mail.NewMessage()
-	msg.SetHeader(h.conf.AdminEmail, email)
-	msg.SetSubject("Subject: Set your password \r\n")
-	msg.SetMime(mail.ContentTypeHTML())
-
-	templateData := struct {
-		URL string
-	}{
-		URL: fmt.Sprintf("%s?_u=%s", h.conf.RedirectURI, param),
-	}
-	msg.SetHTMLTemplate(h.conf.PasswordEmailFilePath, h.conf.PasswordEmailFileName, templateData)
-
-	return h.mailer.Send(email, msg)
+	return h.mailer.Send(email, param)
 }
 
 // Login handles endpoint /user/login.

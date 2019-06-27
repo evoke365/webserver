@@ -16,10 +16,6 @@ import (
 // Config defines configuration variables.
 type Config struct {
 	HTTPPort              int
-	AdminEmail            string
-	RedirectURI           string
-	PasswordEmailFilePath string
-	PasswordEmailFileName string
 }
 
 // Service defines Auth Service instance structure and dependecies.
