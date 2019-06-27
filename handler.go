@@ -33,8 +33,8 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	fmt.Fprintf(w, "Auth service is up and running")
 }
 
-// Redirect handles endpoint /user/redirect/:code.
-func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// Redirect handles endpoint /user/auth/:code.
+func (h *Handler) Auth(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	intercept(w, r)
 	param := ps.ByName("code")
 	if len(param) == 0 {
@@ -58,7 +58,7 @@ func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request, ps httprouter
 	http.Redirect(w, r, fmt.Sprintf("%s/%s", h.conf.RedirectURI, user.Email), 301)
 }
 
-// User handles endpoint /user/:id
+// User handles endpoint /user/find/:id
 func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	intercept(w, r)
 	param := ps.ByName("id")
