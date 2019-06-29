@@ -74,10 +74,8 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 			respond500(w, err)
 			return
 		}
-		if err := h.register(param); err != nil {
-			respond500(w, err)
-			return
-		}
+		respond204(w)
+		return
 	}
 	respond200(w, 1)
 	return
