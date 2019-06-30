@@ -2,12 +2,15 @@ package auth
 
 import (
 	"crypto/md5"
+	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/jacygao/mail"
 	"github.com/julienschmidt/httprouter"
@@ -85,11 +88,6 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 }
 
-func (h *Handler) register(email string) error {
-	param := hex.EncodeToString([]byte(email))
-	return h.mailer.Send(email, param)
-}
-
 // Login handles endpoint /user/login.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)
@@ -141,22 +139,27 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
+	code := encode(6)
+
 	user := &User{}
 	user.Email = strings.ToLower(obj.Email)
 	user.Password = getMD5Hash(obj.Password)
 	user.Timezone = obj.Timezone
+	user.isActive = false
+	user.ActivationCode = code
+	user.ActivationCodeExpiry = time.Now().Add(time.Minute * 10)
 
-	tok, err := h.model.InsertUser(user)
-	if err != nil {
+	if _, err := h.model.InsertUser(user); err != nil {
 		respond500(w, err)
 		return
 	}
-	res := struct {
-		Token string `json:"token"`
-	}{
-		tok,
+
+	if err := h.mailer.Send(user.Email, code); err != nil {
+		respond500(w, err)
+		return
 	}
-	respond200(w, res)
+
+	respond200(w, "")
 	return
 }
 
@@ -198,4 +201,18 @@ func getMD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func encode(max int) string {
+	var table = [...]byte{'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}
+	b := make([]byte, max)
+	n, err := io.ReadAtLeast(rand.Reader, b, max)
+	if n != max {
+		panic(err)
+	}
+	for i := 0; i < len(b); i++ {
+		b[i] = table[int(b[i])%len(table)]
+	}
+
+	return string(b)
 }
