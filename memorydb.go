@@ -50,6 +50,23 @@ func (db *MemoryDB) InsertUser(user *User) (string, error) {
 	return tok, nil
 }
 
+func (db *MemoryDB) VerifyUser(id, code string, user *User) error {
+	if _, err := db.store.Get(id, user); err != nil {
+		return err
+	}
+
+	if user == nil {
+		return errNotFound
+	}
+
+	if user.ActivationCode != code {
+		user = nil
+		return errNotFound
+	}
+
+	return nil
+}
+
 func (db *MemoryDB) IsErrNotFound(err error) bool {
 	return err == errNotFound
 }
