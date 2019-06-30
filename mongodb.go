@@ -68,6 +68,18 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 	return tok, nil
 }
 
+func (db *MongoDB) VerifyUser(email, code string, user *User) error {
+	if err := db.withCollection(func(c *mgo.Collection) error {
+		if err := c.Find(bson.M{"email": email, "activationCode": code}).One(&user); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *MongoDB) IsErrNotFound(err error) bool {
 	return err == mgo.ErrNotFound
 }

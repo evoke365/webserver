@@ -34,6 +34,7 @@ func (s *Service) Start() {
 	router.GET("/user/find/:id", s.handler.User)
 	router.POST("/user/login", s.handler.Login)
 	router.POST("/user/signup", s.handler.Signup)
+	router.POST("/user/verify", s.handler.Verify)
 
 	log.Printf("HTTP Server listenning on port %d", s.conf.HTTPPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HTTPPort), router))

@@ -85,7 +85,6 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 	respond404(w)
 	return
-
 }
 
 // Login handles endpoint /user/login.
@@ -160,6 +159,36 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 
 	respond200(w, "")
+	return
+}
+
+// Verify handles endpoint /user/verify.
+func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	intercept(w, r)
+
+	obj := struct {
+		Email    string `json:"email"`
+		ActivationCode string    `json:"code"`
+	}{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&obj); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	var user *User
+	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, user); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	if user != nil {
+		respond200(w, user.Token)
+		return
+	}
+
+	respond404(w)
 	return
 }
 
