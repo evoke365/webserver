@@ -14,14 +14,14 @@ type Mailer interface {
 }
 
 type User struct {
-	Email                string    `json:"email,omitempty,omitempty"`
-	Password             string    `json:"password,omitempty"`
-	Timezone             int       `json:"timezone,omitempty"`
-	Token                string    `json:"token,omitempty"`
-	TokenExpiry          time.Time `json:"token_expiry,omitempty"`
-	ActivationCode       string    `json:"activation_code,omitempty"`
-	ActivationCodeExpiry time.Time `json:"activation_code_expiry,omitempty"`
-	IsActive             bool      `json:"is_active,omitempty"`
-	Created              time.Time `json:"created,omitempty"`
-	Modified             time.Time `json:"modified_date,omitempty"`
+	Email                string    `bson:"email,omitempty,omitempty"`
+	Password             string    `bson:"password,omitempty"`
+	Timezone             int       `bson:"timezone,omitempty"`
+	Token                string    `bson:"token,omitempty"`
+	TokenExpiry          time.Time `bson:"token_expiry,omitempty"`
+	ActivationCode       string    `bson:"activation_code,omitempty"`
+	ActivationCodeExpiry time.Time `bson:"activation_code_expiry,omitempty"`
+	IsActive             bool      `bson:"is_active,omitempty"`
+	Created              time.Time `bson:"created,omitempty"`
+	Modified             time.Time `bson:"modified,omitempty"`
 }
