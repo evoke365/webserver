@@ -1,7 +1,7 @@
+github.com/JacyGao/crud v0.0.0-20190530131604-57e3be266f04 h1:y813E6Leeapa/GljcAv1fFjQv3e2PwCZiAGfhhEcRf8=
+github.com/JacyGao/crud v0.0.0-20190530131604-57e3be266f04/go.mod h1:CXvhaXLioWXxcNXVyeJj90gJ0s7+5RA0fyUF7A9AWC4=
 github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
 github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/jacygao/crud v0.0.0-20190530131604-57e3be266f04 h1:aUcHFnRpimI10be9uYkWj7+UPgyFXoaufKA3ERraiVA=
-github.com/jacygao/crud v0.0.0-20190530131604-57e3be266f04/go.mod h1:XPjhED0E8jVajO+7+JfCe+pwmRk/tf8nq7G9bl7WgCo=
 github.com/julienschmidt/httprouter v1.2.0 h1:TDTW5Yz1mjftljbcKqRcrYhd4XeOoI98t+9HbQbYf7g=
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=

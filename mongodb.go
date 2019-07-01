@@ -60,7 +60,7 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 				"activation_code_expiry": user.ActivationCodeExpiry,
 				"is_active":              user.IsActive,
 				"created":                now,
-				"modified":               now,
+				"modified_date":          now,
 			}); err != nil {
 			return err
 		}

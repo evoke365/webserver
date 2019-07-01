@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/jacygao/crud"
+	"github.com/JacyGao/crud"
 )
 
 const memoryDBExpirySec = 60 * 60 * 24

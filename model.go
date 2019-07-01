@@ -23,5 +23,5 @@ type User struct {
 	ActivationCodeExpiry time.Time `json:"activation_code_expiry,omitempty"`
 	IsActive             bool      `json:"is_active,omitempty"`
 	Created              time.Time `json:"created,omitempty"`
-	Modified             time.Time `json:"modified,omitempty"`
+	Modified             time.Time `json:"modified_date,omitempty"`
 }
