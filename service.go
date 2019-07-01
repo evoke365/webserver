@@ -9,7 +9,6 @@ import (
 
 	"gopkg.in/mgo.v2"
 
-	"github.com/jacygao/mail"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -21,7 +20,7 @@ type Config struct {
 // Service defines Auth Service instance structure and dependecies.
 type Service struct {
 	conf    Config
-	mailer  mail.Mailer
+	mailer  Mailer
 	handler *Handler
 }
 
@@ -69,7 +68,7 @@ func (s *Service) WithMemoryDB() (*Service, error) {
 }
 
 // WithMailer registers a mail service in the Auth Service instance.
-func (s *Service) WithMailer(ms mail.Mailer) *Service {
+func (s *Service) WithMailer(ms Mailer) *Service {
 	s.mailer = ms
 	return s
 }
