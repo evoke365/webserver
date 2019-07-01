@@ -34,7 +34,7 @@ func (db *MongoDB) withCollection(f func(c *mgo.Collection) error) error {
 
 func (db *MongoDB) GetUser(email string, user *User) error {
 	if err := db.withCollection(func(c *mgo.Collection) error {
-		if err := c.Find(bson.M{"email": email}).One(&user); err != nil {
+		if err := c.Find(bson.M{"email": email}).One(user); err != nil {
 			return err
 		}
 		return nil
@@ -50,14 +50,17 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 	if err := db.withCollection(func(c *mgo.Collection) error {
 		if err := c.Insert(
 			bson.M{
-				"_id":         bson.NewObjectId(),
-				"email":       user.Email,
-				"password":    user.Password,
-				"token":       tok,
-				"tokenExpiry": now.Add(time.Second * defaultTokenExpirySec),
-				"timezone":    user.Timezone,
-				"created":     now,
-				"modified":    now,
+				"_id":                  bson.NewObjectId(),
+				"email":                user.Email,
+				"password":             user.Password,
+				"token":                tok,
+				"tokenExpiry":          now.Add(time.Second * defaultTokenExpirySec),
+				"timezone":             user.Timezone,
+				"activationCode":       user.ActivationCode,
+				"activationCodeExpiry": user.ActivationCodeExpiry,
+				"isActive":             user.IsActive,
+				"created":              now,
+				"modified":             now,
 			}); err != nil {
 			return err
 		}

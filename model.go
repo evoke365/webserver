@@ -10,14 +10,14 @@ type Model interface {
 }
 
 type User struct {
-	Email                string
-	Password             string
-	Timezone             int
-	Token                string
-	TokenExpiry          time.Time
-	ActivationCode       string
-	ActivationCodeExpiry time.Time
-	isActive             bool
-	Created              time.Time
-	Modified             time.Time
+	Email                string    `json:"email"`
+	Password             string    `json:"password"`
+	Timezone             int       `json:"timezone"`
+	Token                string    `json:"token"`
+	TokenExpiry          time.Time `json:"tokenExpiry"`
+	ActivationCode       string    `json:"activationCode"`
+	ActivationCodeExpiry time.Time `json:"activationCodeExpiry"`
+	IsActive             bool      `json:"isActive"`
+	Created              time.Time `json:"created"`
+	Modified             time.Time `json:"modified"`
 }

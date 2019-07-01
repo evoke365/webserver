@@ -70,15 +70,16 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		respond404(w)
 		return
 	}
-
-	var user *User
+	user := &User{}
+	log.Printf("%+v", user)
 	if err := h.model.GetUser(param, user); err != nil {
 		if !h.model.IsErrNotFound(err) {
 			respond500(w, err)
 			return
 		}
 	}
-	if user != nil {
+	log.Printf("%+v", user)
+	if user.IsActive == true {
 		respond200(w, user.Email)
 		return
 	}
@@ -144,7 +145,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	user.Email = strings.ToLower(obj.Email)
 	user.Password = getMD5Hash(obj.Password)
 	user.Timezone = obj.Timezone
-	user.isActive = false
+	user.IsActive = false
 	user.ActivationCode = code
 	user.ActivationCodeExpiry = time.Now().Add(time.Minute * 10)
 
