@@ -9,6 +9,10 @@ type Model interface {
 	IsErrNotFound(err error) bool
 }
 
+type Mailer interface {
+	Send(to string, data interface{}) error
+}
+
 type User struct {
 	Email                string    `json:"email,omitempty,omitempty"`
 	Password             string    `json:"password,omitempty"`

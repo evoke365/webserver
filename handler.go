@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jacygao/mail"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -20,11 +19,11 @@ import (
 type Handler struct {
 	conf   Config
 	model  Model
-	mailer mail.Mailer
+	mailer Mailer
 }
 
 // NewHandler returns a new Handler instance.
-func NewHandler(model Model, mailer mail.Mailer) *Handler {
+func NewHandler(model Model, mailer Mailer) *Handler {
 	return &Handler{
 		model:  model,
 		mailer: mailer,
