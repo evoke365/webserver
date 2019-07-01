@@ -18,10 +18,10 @@ type User struct {
 	Password             string    `json:"password,omitempty"`
 	Timezone             int       `json:"timezone,omitempty"`
 	Token                string    `json:"token,omitempty"`
-	TokenExpiry          time.Time `json:"tokenExpiry,omitempty"`
-	ActivationCode       string
-	ActivationCodeExpiry time.Time `json:"activationCodeExpiry,omitempty"`
-	IsActive             bool      `json:"isActive,omitempty"`
+	TokenExpiry          time.Time `json:"token_expiry,omitempty"`
+	ActivationCode       string    `json:"activation_code,omitempty"`
+	ActivationCodeExpiry time.Time `json:"activation_code_expiry,omitempty"`
+	IsActive             bool      `json:"is_active,omitempty"`
 	Created              time.Time `json:"created,omitempty"`
 	Modified             time.Time `json:"modified,omitempty"`
 }

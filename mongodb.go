@@ -50,17 +50,17 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 	if err := db.withCollection(func(c *mgo.Collection) error {
 		if err := c.Insert(
 			bson.M{
-				"_id":                  bson.NewObjectId(),
-				"email":                user.Email,
-				"password":             user.Password,
-				"token":                tok,
-				"tokenExpiry":          now.Add(time.Second * defaultTokenExpirySec),
-				"timezone":             user.Timezone,
-				"activationCode":       user.ActivationCode,
-				"activationCodeExpiry": user.ActivationCodeExpiry,
-				"isActive":             user.IsActive,
-				"created":              now,
-				"modified":             now,
+				"_id":                    bson.NewObjectId(),
+				"email":                  user.Email,
+				"password":               user.Password,
+				"token":                  tok,
+				"token_expiry":           now.Add(time.Second * defaultTokenExpirySec),
+				"timezone":               user.Timezone,
+				"activation_code":        user.ActivationCode,
+				"activation_code_expiry": user.ActivationCodeExpiry,
+				"is_active":              user.IsActive,
+				"created":                now,
+				"modified":               now,
 			}); err != nil {
 			return err
 		}

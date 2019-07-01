@@ -166,8 +166,8 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	intercept(w, r)
 
 	obj := struct {
-		Email    string `json:"email"`
-		ActivationCode string    `json:"code"`
+		Email          string `json:"email"`
+		ActivationCode string `json:"code"`
 	}{}
 
 	decoder := json.NewDecoder(r.Body)
