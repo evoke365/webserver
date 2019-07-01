@@ -71,7 +71,6 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		return
 	}
 	user := &User{}
-	log.Printf("%+v", user)
 	if err := h.model.GetUser(param, user); err != nil {
 		if !h.model.IsErrNotFound(err) {
 			respond500(w, err)
