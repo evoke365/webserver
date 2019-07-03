@@ -73,7 +73,19 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 
 func (db *MongoDB) VerifyUser(email, code string, user *User) error {
 	if err := db.withCollection(func(c *mgo.Collection) error {
-		if err := c.Find(bson.M{"email": email, "activationCode": code}).One(&user); err != nil {
+		if err := c.Find(bson.M{"email": email, "activation_code": code}).One(&user); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *MongoDB) ActivateUser(email string) error {
+	if err := db.withCollection(func(c *mgo.Collection) error {
+		if err := c.Update(bson.M{"email": email}, bson.M{"is_active": true}); err != nil {
 			return err
 		}
 		return nil

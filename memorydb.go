@@ -67,6 +67,21 @@ func (db *MemoryDB) VerifyUser(id, code string, user *User) error {
 	return nil
 }
 
+func (db *MemoryDB) ActivateUser(id string) error {
+	user := &User{}
+	if _, err := db.store.Get(id, user); err != nil {
+		return err
+	}
+	if user == nil {
+		return errNotFound
+	}
+	user.IsActive = true
+	if _, err := db.store.Upsert(id, user, memoryDBExpirySec); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *MemoryDB) IsErrNotFound(err error) bool {
 	return err == errNotFound
 }
