@@ -100,7 +100,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		return
 	}
 
-	var user *User
+	user := &User{}
 	if err := h.model.GetUser(obj.Email, user); err != nil {
 		respond500(w, err)
 		return
