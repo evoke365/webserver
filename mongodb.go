@@ -85,7 +85,7 @@ func (db *MongoDB) VerifyUser(email, code string, user *User) error {
 
 func (db *MongoDB) ActivateUser(email string) error {
 	if err := db.withCollection(func(c *mgo.Collection) error {
-		if err := c.Update(bson.M{"email": email}, bson.M{"is_active": true}); err != nil {
+		if err := c.Update(bson.M{"email": email}, bson.M{"$set": bson.M{"is_active": true}}); err != nil {
 			return err
 		}
 		return nil
