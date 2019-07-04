@@ -31,7 +31,7 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	fmt.Fprintf(w, "Auth service is up and running")
 }
 
-// Redirect handles endpoint /user/auth/:code.
+// Redirect handles endpoint /user/auth
 func (h *Handler) Auth(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	intercept(w, r)
 	param := ps.ByName("code")
@@ -147,6 +147,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
+	// making emailing a goroutine
 	if err := h.mailer.Send(user.Email, code); err != nil {
 		respond500(w, err)
 		return
@@ -171,11 +172,13 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
-	var user *User
+	user := &User{}
 	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, user); err != nil {
 		respond500(w, err)
 		return
 	}
+
+	// TODO: check code expiration
 
 	if user != nil {
 		// mark user active
