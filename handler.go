@@ -58,11 +58,13 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 }
 
 // User handles endpoint /user/find/:id
+// If user is found, return status code 200 with response body 1
+// If user is not found, return status code 200 with response body 0
 func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	intercept(w, r)
 	param := ps.ByName("id")
 	if len(param) == 0 {
-		respond404(w)
+		respond400(w)
 		return
 	}
 	user := &User{}
@@ -73,11 +75,10 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		}
 	}
 	if user.IsActive == true {
-		respond200(w, user.Email)
+		respond200(w, 1)
 		return
 	}
-
-	respond404(w)
+	respond200(w, 0)
 	return
 }
 

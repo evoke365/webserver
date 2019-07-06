@@ -36,6 +36,10 @@ func respond204(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func respond400(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusBadRequest)
+}
+
 func respond401(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusUnauthorized)
 }
