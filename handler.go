@@ -148,13 +148,9 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
-	// making emailing a goroutine
-	if err := h.mailer.Send(user.Email, code); err != nil {
-		respond500(w, err)
-		return
-	}
-
-	respond200(w, "")
+	go h.mailer.Send(user.Email, code)
+	
+	respond200(w, 1)
 	return
 }
 
