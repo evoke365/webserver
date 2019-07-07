@@ -28,7 +28,7 @@ type Service struct {
 func (s *Service) Start() {
 	router := httprouter.New()
 	router.GET("/health", s.handler.Health)
-	router.GET("/Authenticate/:token", s.handler.Authenticate)
+	router.GET("/authenticate/:token", s.handler.Authenticate)
 	router.GET("/user/find/:id", s.handler.User)
 	router.POST("/user/login", s.handler.Login)
 	router.POST("/user/signup", s.handler.Signup)
