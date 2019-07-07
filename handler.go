@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -31,30 +30,29 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	fmt.Fprintf(w, "Auth service is up and running")
 }
 
-// Redirect handles endpoint /user/auth
-func (h *Handler) Auth(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+// Auth handles endpoint /Authenticate/:token
+func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// TODO: implement specific interceptor for cors control
 	intercept(w, r)
-	param := ps.ByName("code")
+	param := ps.ByName("token")
 	if len(param) == 0 {
 		respond404(w)
 		return
 	}
 
-	mailBytes, err := hex.DecodeString(param)
-	if err != nil {
+	user := &User{}
+	if err := h.model.FindUserByTok(param, user); err != nil {
+		respond400(w)
+		return
+	}
+
+	if err := h.model.TouchTok(user.Email); err != nil {
 		respond500(w, err)
 		return
 	}
 
-	// TODO: check url code expiry
-	// TODO: checking and formatting uri string
-
-	res := struct {
-		Email string `json:"email"`
-	}{
-		Email: string(mailBytes),
-	}
-	respond200(w, res)
+	respond200(w, user)
+	return
 }
 
 // User handles endpoint /user/find/:id
@@ -149,7 +147,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 
 	go h.mailer.Send(user.Email, code)
-	
+
 	respond200(w, 1)
 	return
 }
@@ -170,12 +168,11 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 
 	user := &User{}
+	// TODO: check code expiration in query
 	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, user); err != nil {
 		respond500(w, err)
 		return
 	}
-
-	// TODO: check code expiration
 
 	if user != nil {
 		// mark user active

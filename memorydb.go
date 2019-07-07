@@ -11,6 +11,7 @@ import (
 const memoryDBExpirySec = 60 * 60 * 24
 
 var errNotFound = errors.New("not found")
+var errNotImplemented = errors.New("not implemented")
 
 // MemoryDB defines instance structure and dependencies.
 type MemoryDB struct {
@@ -80,6 +81,14 @@ func (db *MemoryDB) ActivateUser(id string) error {
 		return err
 	}
 	return nil
+}
+
+func (db *MemoryDB) FindUserByTok(tok string, user *User) error {
+	return errNotImplemented
+}
+
+func (db *MemoryDB) TouchTok(id string) error{
+	return errNotImplemented
 }
 
 func (db *MemoryDB) IsErrNotFound(err error) bool {

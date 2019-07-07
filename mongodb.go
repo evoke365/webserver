@@ -95,6 +95,30 @@ func (db *MongoDB) ActivateUser(email string) error {
 	return nil
 }
 
+func (db *MongoDB) FindUserByTok(tok string, user *User) error {
+	if err := db.withCollection(func(c *mgo.Collection) error {
+		if err := c.Find(bson.M{"token": tok}).One(user); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *MongoDB) TouchTok(email string) error {
+	if err := db.withCollection(func(c *mgo.Collection) error {
+		if err := c.Update(bson.M{"email": email}, bson.M{"$set": bson.M{"token_expiry": defaultTokenExpirySec}}); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *MongoDB) IsErrNotFound(err error) bool {
 	return err == mgo.ErrNotFound
 }
