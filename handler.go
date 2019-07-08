@@ -46,6 +46,7 @@ func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
+	// TODO: TouchTok should return new token expiry.
 	if err := h.model.TouchTok(user.Email); err != nil {
 		respond500(w, err)
 		return
