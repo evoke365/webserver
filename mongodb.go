@@ -109,7 +109,14 @@ func (db *MongoDB) FindUserByTok(tok string, user *User) error {
 
 func (db *MongoDB) TouchTok(email string) error {
 	if err := db.withCollection(func(c *mgo.Collection) error {
-		if err := c.Update(bson.M{"email": email}, bson.M{"$set": bson.M{"token_expiry": defaultTokenExpirySec}}); err != nil {
+		if err := c.Update(
+			bson.M{"email": email},
+			bson.M{
+				"$set": bson.M{
+					"token_expiry": time.Now().Add(time.Second * defaultTokenExpirySec),
+				},
+			},
+		); err != nil {
 			return err
 		}
 		return nil
