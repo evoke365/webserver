@@ -111,8 +111,15 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 			respond500(w, err)
 			return
 		}
+
 		go h.mailer.Send(user.Email, code)
-		respond200(w, 1)
+
+		res := struct {
+			Action string `json:"action"`
+		}{
+			"verify",
+		}
+		respond200(w, res)
 		return
 	}
 	if user.Password == getMD5Hash(obj.Password) {
