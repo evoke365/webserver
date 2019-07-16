@@ -95,6 +95,20 @@ func (db *MongoDB) ActivateUser(email string) error {
 	return nil
 }
 
+func (db *MongoDB) UpdateActiveCode(email, code string, exp time.Time) error {
+	if err := db.withCollection(func(c *mgo.Collection) error {
+		if err := c.Update(
+			bson.M{"email": email},
+			bson.M{"$set": bson.M{"activation_code": code, "activation_code_expiry": exp}}); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *MongoDB) FindUserByTok(tok string, user *User) error {
 	if err := db.withCollection(func(c *mgo.Collection) error {
 		if err := c.Find(bson.M{"token": tok}).One(user); err != nil {

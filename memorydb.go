@@ -91,6 +91,10 @@ func (db *MemoryDB) TouchTok(id string) error{
 	return errNotImplemented
 }
 
+func (db *MemoryDB) UpdateActiveCode(id, code string, exp time.Time) error {
+	return errNotImplemented
+}
+
 func (db *MemoryDB) IsErrNotFound(err error) bool {
 	return err == errNotFound
 }

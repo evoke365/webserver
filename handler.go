@@ -104,6 +104,17 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 		respond404(w)
 		return
 	}
+	if !user.IsActive {
+		code := encode(6)
+		exp := time.Now().Add(time.Minute * 10)
+		if err := h.model.UpdateActiveCode(obj.Email, code, exp); err != nil {
+			respond500(w, err)
+			return
+		}
+		go h.mailer.Send(user.Email, code)
+		respond200(w, 1)
+		return
+	}
 	if user.Password == getMD5Hash(obj.Password) {
 		res := struct {
 			Token string `json:"token"`
