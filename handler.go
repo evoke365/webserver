@@ -73,11 +73,7 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 			return
 		}
 	}
-	if user.IsActive == true {
-		respond200(w, 1)
-		return
-	}
-	respond200(w, 0)
+	respond200(w, 1)
 	return
 }
 
