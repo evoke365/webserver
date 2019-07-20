@@ -110,7 +110,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 			return
 		}
 
-		go h.mailer.Send(user.Email, code)
+		go h.mailer.SendVerificationEmail(user.Email, code)
 
 		res := struct {
 			Action string `json:"action"`
@@ -163,7 +163,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
-	go h.mailer.Send(user.Email, code)
+	go h.mailer.SendVerificationEmail(user.Email, code)
 
 	respond200(w, 1)
 	return

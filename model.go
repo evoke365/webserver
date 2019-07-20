@@ -14,7 +14,8 @@ type Model interface {
 }
 
 type Mailer interface {
-	Send(to string, data interface{}) error
+	SendVerificationEmail(to string, data interface{}) error
+	SendWelcomeEmail(to string, data interface{}) error
 }
 
 type User struct {
