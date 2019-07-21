@@ -10,11 +10,12 @@ import (
 	"gopkg.in/mgo.v2"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/rs/cors"
 )
 
 // Config defines configuration variables.
 type Config struct {
-	HTTPPort              int
+	HTTPPort int
 }
 
 // Service defines Auth Service instance structure and dependecies.
@@ -34,8 +35,10 @@ func (s *Service) Start() {
 	router.POST("/user/signup", s.handler.Signup)
 	router.POST("/user/verify", s.handler.Verify)
 
+	handler := cors.Default().Handler(router)
+
 	log.Printf("HTTP Server listenning on port %d", s.conf.HTTPPort)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HTTPPort), router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HTTPPort), handler))
 }
 
 // Stop contains processes for a graceful shutdown.
