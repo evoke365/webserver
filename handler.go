@@ -30,32 +30,6 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	fmt.Fprintf(w, "Auth service is up and running")
 }
 
-// Auth handles endpoint /Authenticate/:token
-func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// TODO: implement specific interceptor for cors control
-	intercept(w, r)
-	param := ps.ByName("token")
-	if len(param) == 0 {
-		respond404(w)
-		return
-	}
-
-	user := &User{}
-	if err := h.model.FindUserByTok(param, user); err != nil {
-		respond400(w)
-		return
-	}
-
-	// TODO: TouchTok should return new token expiry.
-	if err := h.model.TouchTok(user.Email); err != nil {
-		respond500(w, err)
-		return
-	}
-
-	respond200(w, user)
-	return
-}
-
 // User handles endpoint /user/find/:id
 // If user is found, return status code 200 with response body 1
 // If user is not found, return status code 200 with response body 0
@@ -209,5 +183,67 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 
 	respond404(w)
+	return
+}
+
+// Auth handles endpoint /authenticate/:token
+func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// TODO: implement specific interceptor for cors control
+	intercept(w, r)
+	param := ps.ByName("token")
+	if len(param) == 0 {
+		respond404(w)
+		return
+	}
+
+	user := &User{}
+	if err := h.model.FindUserByTok(param, user); err != nil {
+		respond400(w)
+		return
+	}
+
+	// TODO: TouchTok should return new token expiry.
+	if err := h.model.TouchTok(user.Email); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	respond200(w, user)
+	return
+}
+
+// Profile handles endpoint /profile/:id
+func (h *Handler) Profile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	intercept(w, r)
+	param := ps.ByName("id")
+	if len(param) == 0 {
+		respond404(w)
+		return
+	}
+
+	user := &User{}
+	if err := h.model.GetUser(param, user); err != nil {
+		if !h.model.IsErrNotFound(err) {
+			respond500(w, err)
+			return
+		}
+		respond404(w)
+	}
+
+	profile := struct {
+		Email    string    `bson:"email"`
+		Timezone int       `bson:"timezone"`
+		IsActive bool      `bson:"is_active"`
+		Created  time.Time `bson:"created,omitempty"`
+		Modified time.Time `bson:"modified,omitempty"`
+	}{
+		user.Email,
+		user.Timezone,
+		user.IsActive,
+		user.Created,
+		user.Modified,
+	}
+
+	respond200(w, profile)
 	return
 }

@@ -29,11 +29,13 @@ type Service struct {
 func (s *Service) Start() {
 	router := httprouter.New()
 	router.GET("/health", s.handler.Health)
-	router.GET("/authenticate/:token", s.handler.Authenticate)
 	router.GET("/user/find/:id", s.handler.User)
 	router.POST("/user/login", s.handler.Login)
 	router.POST("/user/signup", s.handler.Signup)
 	router.POST("/user/verify", s.handler.Verify)
+
+	router.GET("/authenticate/:token", s.handler.Authenticate)
+	router.GET("/profile/:id", s.handler.Profile)
 
 	handler := cors.Default().Handler(router)
 
