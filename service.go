@@ -39,7 +39,7 @@ func (s *Service) Start() {
 
 	handler := cors.Default().Handler(router)
 
-	log.Printf("HTTP Server listenning on port %d", s.conf.HTTPPort)
+	log.Printf("Authentication Server listenning on port %d", s.conf.HTTPPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HTTPPort), handler))
 }
 
