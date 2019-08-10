@@ -53,6 +53,32 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 	return
 }
 
+func (h *Handler) Forget(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	intercept(w, r)
+	param := ps.ByName("id")
+	if len(param) == 0 {
+		respond400(w)
+		return
+	}
+
+	email := strings.ToLower(param)
+	code := encode(6)
+	exp := time.Now().Add(time.Minute * 10)
+	if err := h.model.UpdateActiveCode(email, code, exp); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	go h.mailer.SendVerificationEmail(email, code)
+
+	res := struct {
+		Action string `json:"action"`
+	}{
+		"forget",
+	}
+	respond200(w, res)
+}
+
 // Login handles endpoint /user/login.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)

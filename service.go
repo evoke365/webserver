@@ -30,6 +30,7 @@ func (s *Service) Start() {
 	router := httprouter.New()
 	router.GET("/health", s.handler.Health)
 	router.GET("/user/find/:id", s.handler.User)
+	router.PUT("/user/forget/:id", s.handler.Forget)
 	router.POST("/user/login", s.handler.Login)
 	router.POST("/user/signup", s.handler.Signup)
 	router.POST("/user/verify", s.handler.Verify)
