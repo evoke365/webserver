@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"time"
 	"errors"
+	"time"
 
-	"github.com/google/uuid"
 	"github.com/JacyGao/crud"
+	"github.com/google/uuid"
 )
 
 const memoryDBExpirySec = 60 * 60 * 24
@@ -87,11 +87,15 @@ func (db *MemoryDB) FindUserByTok(tok string, user *User) error {
 	return errNotImplemented
 }
 
-func (db *MemoryDB) TouchTok(id string) error{
+func (db *MemoryDB) TouchTok(id string) error {
 	return errNotImplemented
 }
 
 func (db *MemoryDB) UpdateActiveCode(id, code string, exp time.Time) error {
+	return errNotImplemented
+}
+
+func (db *MemoryDB) UpdatePassword(id, tok, pwd string) error {
 	return errNotImplemented
 }
 

@@ -79,6 +79,29 @@ func (h *Handler) Forget(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	respond200(w, res)
 }
 
+func (h *Handler) SetPassword(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	intercept(w, r)
+	obj := struct {
+		Email    string `json:"email"`
+		Token    string `json:"token"`
+		Password string `json:"password"`
+	}{}
+
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&obj); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	if err := h.model.UpdatePassword(obj.Email, obj.Token, getMD5Hash(obj.Password)); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	respond200(w, 1)
+	return
+}
+
 // Login handles endpoint /user/login.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	intercept(w, r)

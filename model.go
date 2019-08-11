@@ -10,6 +10,7 @@ type Model interface {
 	UpdateActiveCode(id, code string, exp time.Time) error
 	FindUserByTok(tok string, user *User) error
 	TouchTok(id string) error
+	UpdatePassword(id, tok, pwd string) error
 	IsErrNotFound(err error) bool
 }
 

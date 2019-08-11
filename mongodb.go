@@ -109,6 +109,20 @@ func (db *MongoDB) UpdateActiveCode(email, code string, exp time.Time) error {
 	return nil
 }
 
+func (db *MongoDB) UpdatePassword(email, tok, pwd string) error {
+	if err := db.withCollection(func(c *mgo.Collection) error {
+		if err := c.Update(
+			bson.M{"email": email, "token": tok},
+			bson.M{"$set": bson.M{"password": pwd}}); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *MongoDB) FindUserByTok(tok string, user *User) error {
 	if err := db.withCollection(func(c *mgo.Collection) error {
 		if err := c.Find(bson.M{"token": tok}).One(user); err != nil {
