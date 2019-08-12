@@ -39,7 +39,8 @@ func (s *Service) Start() {
 	router.GET("/authenticate/:token", s.handler.Authenticate)
 	router.GET("/profile/:id", s.handler.Profile)
 
-	handler := cors.Default().Handler(router)
+	// TODO: Consolidate this
+	handler := cors.AllowAll().Handler(router)
 
 	log.Printf("Authentication Server listenning on port %d", s.conf.HTTPPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.conf.HTTPPort), handler))
