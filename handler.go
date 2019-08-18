@@ -64,7 +64,7 @@ func (h *Handler) Forget(w http.ResponseWriter, r *http.Request, ps httprouter.P
 
 	email := strings.ToLower(param)
 	code := encode(6)
-	exp := time.Now().Add(time.Minute * 10)
+	exp := time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
 	if err := h.model.UpdateActiveCode(email, code, exp); err != nil {
 		respond500(w, err)
 		return
@@ -128,7 +128,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 	if !user.IsActive {
 		code := encode(6)
-		exp := time.Now().Add(time.Minute * 10)
+		exp := time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
 		if err := h.model.UpdateActiveCode(obj.Email, code, exp); err != nil {
 			respond500(w, err)
 			return
@@ -180,7 +180,7 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	user.Timezone = obj.Timezone
 	user.IsActive = false
 	user.ActivationCode = code
-	user.ActivationCodeExpiry = time.Now().Add(time.Minute * 10)
+	user.ActivationCodeExpiry = time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
 
 	if _, err := h.model.InsertUser(user); err != nil {
 		respond500(w, err)
@@ -208,11 +208,8 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
-	now := time.Now()
-	exp := now.Add(time.Duration(-h.conf.VerificationCodeExpiryMinutes) * time.Minute)
-
 	user := &User{}
-	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, exp, user); err != nil {
+	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, user); err != nil {
 		respond500(w, err)
 		return
 	}

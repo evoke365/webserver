@@ -75,9 +75,9 @@ func (db *MongoDB) InsertUser(user *User) (string, error) {
 	return tok, nil
 }
 
-func (db *MongoDB) VerifyUser(email, code string, exp time.Time, user *User) error {
+func (db *MongoDB) VerifyUser(email, code string, user *User) error {
 	if err := db.withCollection(func(c *mgo.Collection) error {
-		if err := c.Find(bson.M{"email": email, "activation_code": code, "activation_code_expiry": bson.M{"$gte": exp}}).One(&user); err != nil {
+		if err := c.Find(bson.M{"email": email, "activation_code": code, "activation_code_expiry": bson.M{"$gte": time.Now()}}).One(&user); err != nil {
 			return err
 		}
 		return nil
