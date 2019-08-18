@@ -10,12 +10,16 @@ import (
 
 const defaultTokenExpirySec = 60 * 60 * 24
 
+// MongoDB implements Model interface backed by mgo v2.
 type MongoDB struct {
 	session    *mgo.Session
 	name       string
 	collection string
 }
 
+// NewMongoDB returns a new MongDB instance.
+// name: the name of the database.
+// collection: the name of the collection.
 func NewMongoDB(s *mgo.Session, name, collection string) (*MongoDB, error) {
 	return &MongoDB{
 		session:    s,
