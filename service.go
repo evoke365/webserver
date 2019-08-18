@@ -15,7 +15,8 @@ import (
 
 // Config defines configuration variables.
 type Config struct {
-	HTTPPort int
+	HTTPPort                      int
+	VerificationCodeExpiryMinutes int
 }
 
 // Service defines Auth Service instance structure and dependecies.
@@ -61,7 +62,7 @@ func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) (
 	if s.mailer == nil {
 		return nil, errors.New("you must call withMailer first")
 	}
-	s.handler = NewHandler(model, s.mailer)
+	s.handler = NewHandler(s.conf, model, s.mailer)
 	return s, nil
 }
 
@@ -71,7 +72,7 @@ func (s *Service) WithMemoryDB() (*Service, error) {
 	if s.mailer == nil {
 		return nil, errors.New("you must call withMailer first")
 	}
-	s.handler = NewHandler(model, s.mailer)
+	s.handler = NewHandler(s.conf, model, s.mailer)
 	return s, nil
 }
 
@@ -83,6 +84,10 @@ func (s *Service) WithMailer(ms Mailer) *Service {
 
 // NewService initialises a new Auth Service instance.
 func NewService(c Config) *Service {
+	// Default verification expiry to 10 minutes
+	if c.VerificationCodeExpiryMinutes == 0 {
+		c.VerificationCodeExpiryMinutes = 10
+	}
 	return &Service{
 		conf: c,
 	}

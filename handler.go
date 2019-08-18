@@ -18,8 +18,9 @@ type Handler struct {
 }
 
 // NewHandler returns a new Handler instance.
-func NewHandler(model Model, mailer Mailer) *Handler {
+func NewHandler(c Config, model Model, mailer Mailer) *Handler {
 	return &Handler{
+		conf:   c,
 		model:  model,
 		mailer: mailer,
 	}
@@ -208,7 +209,6 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	}
 
 	user := &User{}
-	// TODO: check code expiration in query
 	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, user); err != nil {
 		respond500(w, err)
 		return
