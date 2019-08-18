@@ -6,7 +6,7 @@ type Model interface {
 	GetUser(id string, user *User) error
 	InsertUser(user *User) (string, error)
 	ActivateUser(id string) error
-	VerifyUser(id, code string, user *User) error
+	VerifyUser(id, code string, exp time.Time, user *User) error
 	UpdateActiveCode(id, code string, exp time.Time) error
 	FindUserByTok(tok string, user *User) error
 	TouchTok(id string) error

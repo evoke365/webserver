@@ -66,16 +66,6 @@ func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) (
 	return s, nil
 }
 
-// WithMemoryDB registers In-memory db in the Auth Service instance.
-func (s *Service) WithMemoryDB() (*Service, error) {
-	model := NewMemoryDB()
-	if s.mailer == nil {
-		return nil, errors.New("you must call withMailer first")
-	}
-	s.handler = NewHandler(s.conf, model, s.mailer)
-	return s, nil
-}
-
 // WithMailer registers a mail service in the Auth Service instance.
 func (s *Service) WithMailer(ms Mailer) *Service {
 	s.mailer = ms

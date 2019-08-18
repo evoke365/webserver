@@ -208,8 +208,11 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
+	now := time.Now()
+	exp := now.Add(time.Duration(-h.conf.VerificationCodeExpiryMinutes) * time.Minute)
+
 	user := &User{}
-	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, user); err != nil {
+	if err := h.model.VerifyUser(obj.Email, obj.ActivationCode, exp, user); err != nil {
 		respond500(w, err)
 		return
 	}
