@@ -18,6 +18,7 @@ type Handler struct {
 }
 
 // NewHandler returns a new Handler instance.
+// TODO: implement default Mailer implementation.
 func NewHandler(c Config, model Model, mailer Mailer) *Handler {
 	return &Handler{
 		conf:   c,
@@ -235,7 +236,7 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	return
 }
 
-// Auth handles endpoint /authenticate/:token
+// Authenticate handles endpoint /authenticate/:token
 func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// TODO: implement specific interceptor for cors control
 	intercept(w, r)
