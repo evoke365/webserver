@@ -19,6 +19,11 @@ type Mailer interface {
 	SendWelcomeEmail(to string, data interface{}) error
 }
 
+// Callback defines behaviours of callbacks during each authentciation method.
+type Callback interface {
+	OnSignup(user *User) error
+}
+
 type User struct {
 	Email                string    `bson:"email,omitempty,omitempty"`
 	Password             string    `bson:"password,omitempty"`

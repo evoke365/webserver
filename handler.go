@@ -12,18 +12,20 @@ import (
 
 // Handler defines Handler instance and its dependencies.
 type Handler struct {
-	conf   Config
-	model  Model
-	mailer Mailer
+	conf     Config
+	model    Model
+	mailer   Mailer
+	callback Callback
 }
 
 // NewHandler returns a new Handler instance.
 // TODO: implement default Mailer implementation.
-func NewHandler(c Config, model Model, mailer Mailer) *Handler {
+func NewHandler(c Config, model Model, mailer Mailer, cb Callback) *Handler {
 	return &Handler{
-		conf:   c,
-		model:  model,
-		mailer: mailer,
+		conf:     c,
+		model:    model,
+		mailer:   mailer,
+		callback: cb,
 	}
 }
 
@@ -184,6 +186,11 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	user.ActivationCodeExpiry = time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
 
 	if _, err := h.model.InsertUser(user); err != nil {
+		respond500(w, err)
+		return
+	}
+
+	if err := h.callback.OnSignup(user); err != nil {
 		respond500(w, err)
 		return
 	}
