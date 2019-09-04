@@ -68,6 +68,7 @@ func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) (
 }
 
 // WithMailer registers a mail service in the Auth Service instance.
+// TODO: Remove Mailer as it should be handled in the Callback methods.
 func (s *Service) WithMailer(ms Mailer) *Service {
 	s.mailer = ms
 	return s
