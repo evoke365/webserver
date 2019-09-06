@@ -8,6 +8,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 // TODO: implement config driven CORS.
@@ -66,4 +68,8 @@ func encode(max int) string {
 	}
 
 	return string(b)
+}
+
+func newToken() string {
+	return uuid.New().String()
 }

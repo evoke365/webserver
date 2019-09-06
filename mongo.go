@@ -118,5 +118,5 @@ func (m *Mongo) UpdatePassword(id, tok, pwd string) error {
 }
 
 func (m *Mongo) IsErrNotFound(err error) bool {
-	return false
+	return err == mongo.ErrNilDocument
 }

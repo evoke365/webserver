@@ -3,7 +3,6 @@ package auth
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -160,8 +159,4 @@ func (db *MongoDB) TouchTok(email string) error {
 
 func (db *MongoDB) IsErrNotFound(err error) bool {
 	return err == mgo.ErrNotFound
-}
-
-func newToken() string {
-	return uuid.New().String()
 }
