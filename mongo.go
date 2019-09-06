@@ -88,7 +88,7 @@ func (m *Mongo) UpdateActiveCode(id, code string, exp time.Time) error {
 }
 
 func (m *Mongo) FindUserByTok(tok string, user *User) error {
-	return nil
+	return m.Collection.FindOne(context.Background(), bson.M{"token": tok}).Decode(&user)
 }
 
 func (m *Mongo) TouchTok(id string) error {
