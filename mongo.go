@@ -92,10 +92,28 @@ func (m *Mongo) FindUserByTok(tok string, user *User) error {
 }
 
 func (m *Mongo) TouchTok(id string) error {
+	if _, err := m.Collection.UpdateOne(
+		context.Background(),
+		bson.M{"email": id},
+		bson.M{
+			"$set": bson.M{
+				"token_expiry": time.Now().Add(time.Second * defaultTokenExpirySec),
+			},
+		},
+	); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *Mongo) UpdatePassword(id, tok, pwd string) error {
+	if _, err := m.Collection.UpdateOne(
+		context.Background(),
+		bson.M{"email": id, "token": tok},
+		bson.M{"$set": bson.M{"password": pwd}},
+	); err != nil {
+		return err
+	}
 	return nil
 }
 
