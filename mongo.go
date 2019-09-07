@@ -2,28 +2,26 @@ package auth
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Mongo struct {
 	Collection *mongo.Collection
 }
 
-func NewMongo(dbName, collectionName, uri string) *Mongo {
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
-	if err != nil {
-		log.Fatal(err)
+func NewMongo(client *mongo.Client, dbName, collectionName string) (*Mongo, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	if err := client.Connect(ctx); err != nil {
+		return nil, err
 	}
 	return &Mongo{
 		Collection: client.Database(dbName).Collection(collectionName),
-	}
+	}, nil
 }
 
 func (m *Mongo) GetUser(id string, user *User) error {
