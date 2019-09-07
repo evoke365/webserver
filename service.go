@@ -68,6 +68,7 @@ func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) (
 	return s, nil
 }
 
+// WithMongoDriver registers Mongo DB Offcial Driver in the Auth Service instance.
 func (s *Service) WithMongoDriver(client *mongo.Client, dbName, collection string) (*Service, error) {
 	model, err := NewMongo(client, dbName, collection)
 	if err != nil {
