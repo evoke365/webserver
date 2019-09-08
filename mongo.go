@@ -14,11 +14,6 @@ type Mongo struct {
 }
 
 func NewMongo(client *mongo.Client, dbName, collectionName string) (*Mongo, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-	defer cancel()
-	if err := client.Connect(ctx); err != nil {
-		return nil, err
-	}
 	return &Mongo{
 		Collection: client.Database(dbName).Collection(collectionName),
 	}, nil
