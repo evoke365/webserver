@@ -244,8 +244,8 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 }
 
 // Authenticate handles endpoint /authenticate/:token
+// TODO: passing token in request header
 func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// TODO: implement specific interceptor for cors control
 	intercept(w, r)
 	param := ps.ByName("token")
 	if len(param) == 0 {

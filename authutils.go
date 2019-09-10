@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// TODO: implement config driven CORS.
+// TODO: Write a proper middleware for interceptor
 func intercept(w http.ResponseWriter, req *http.Request) {
 	log.Printf("Incoming request: %v", req)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
