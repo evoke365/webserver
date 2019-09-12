@@ -9,6 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const defaultTokenExpirySec = 60 * 60 * 24
+
 type Mongo struct {
 	Collection *mongo.Collection
 }

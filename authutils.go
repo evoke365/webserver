@@ -15,7 +15,6 @@ import (
 // TODO: Write a proper middleware for interceptor
 func intercept(w http.ResponseWriter, req *http.Request) {
 	log.Printf("Incoming request: %v", req)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 func respond200(w http.ResponseWriter, res interface{}) error {

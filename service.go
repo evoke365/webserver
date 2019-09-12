@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/mongo"
-	"gopkg.in/mgo.v2"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/cors"
@@ -53,19 +52,6 @@ func (s *Service) Start() {
 func (s *Service) Stop() {
 	// Close everything
 	log.Println("Shutting down...")
-}
-
-// WithMongoDB registers Mongo DB in the Auth Service instance.
-func (s *Service) WithMongoDB(session *mgo.Session, dbName, collection string) (*Service, error) {
-	model, err := NewMongoDB(session, dbName, collection)
-	if err != nil {
-		return nil, err
-	}
-	if s.mailer == nil {
-		return nil, errors.New("you must call withMailer first")
-	}
-	s.handler = NewHandler(s.conf, model, s.mailer, s.callback)
-	return s, nil
 }
 
 // WithMongoDriver registers Mongo DB Offcial Driver in the Auth Service instance.
