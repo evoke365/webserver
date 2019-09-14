@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const defaultTokenExpirySec = 60 * 60 * 24
@@ -68,18 +69,22 @@ func (m *Mongo) VerifyUser(id, code string, user *User) error {
 	).Decode(&user)
 }
 
-func (m *Mongo) UpdateActiveCode(id, code string, exp time.Time) error {
-	if _, err := m.Collection.UpdateOne(
+func (m *Mongo) UpdateActiveCode(id, code string, exp time.Time) (*User, error) {
+	user := &User{}
+	opts := options.FindOneAndUpdate()
+	opts.SetReturnDocument(options.After)
+	if err := m.Collection.FindOneAndUpdate(
 		context.Background(),
 		bson.M{"email": id},
 		bson.M{"$set": bson.M{
 			"activation_code":        code,
 			"activation_code_expiry": exp,
-		},
-		}); err != nil {
-		return err
+		}},
+		opts,
+	).Decode(user); err != nil {
+		return nil, err
 	}
-	return nil
+	return user, nil
 }
 
 func (m *Mongo) FindUserByTok(tok string, user *User) error {
