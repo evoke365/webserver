@@ -18,7 +18,6 @@ type Handler struct {
 }
 
 // NewHandler returns a new Handler instance.
-// TODO: implement default Mailer implementation.
 func NewHandler(c Config, model Model, cb Callback) *Handler {
 	return &Handler{
 		conf:     c,
