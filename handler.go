@@ -68,12 +68,13 @@ func (h *Handler) Forget(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	email := strings.ToLower(param)
 	code := encode(6)
 	exp := time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
-	if err := h.model.UpdateActiveCode(email, code, exp); err != nil {
+	user, err := h.model.UpdateActiveCode(email, code, exp)
+	if err != nil {
 		respond500(w, err)
 		return
 	}
 
-	go h.mailer.SendVerificationEmail(email, code)
+	go h.mailer.SendVerificationEmail(user.Email, user.ActivationCode)
 
 	res := struct {
 		Action string `json:"action"`
@@ -132,7 +133,8 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	if !user.IsActive {
 		code := encode(6)
 		exp := time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
-		if err := h.model.UpdateActiveCode(obj.Email, code, exp); err != nil {
+		user, err := h.model.UpdateActiveCode(obj.Email, code, exp)
+		if err != nil {
 			respond500(w, err)
 			return
 		}
