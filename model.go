@@ -14,14 +14,10 @@ type Model interface {
 	IsErrNotFound(err error) bool
 }
 
-type Mailer interface {
-	SendVerificationEmail(to string, data interface{}) error
-	SendWelcomeEmail(to string, data interface{}) error
-}
-
 // Callback defines behaviours of callbacks during each authentciation method.
 type Callback interface {
 	OnSignup(user *User) error
+	OnVerify(to string, data interface{}) error
 }
 
 type User struct {

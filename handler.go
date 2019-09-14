@@ -14,17 +14,15 @@ import (
 type Handler struct {
 	conf     Config
 	model    Model
-	mailer   Mailer
 	callback Callback
 }
 
 // NewHandler returns a new Handler instance.
 // TODO: implement default Mailer implementation.
-func NewHandler(c Config, model Model, mailer Mailer, cb Callback) *Handler {
+func NewHandler(c Config, model Model, cb Callback) *Handler {
 	return &Handler{
 		conf:     c,
 		model:    model,
-		mailer:   mailer,
 		callback: cb,
 	}
 }
@@ -74,7 +72,10 @@ func (h *Handler) Forget(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		return
 	}
 
-	go h.mailer.SendVerificationEmail(user.Email, user.ActivationCode)
+	if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+		respond500(w, err)
+		return
+	}
 
 	res := struct {
 		Action string `json:"action"`
@@ -139,7 +140,10 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 			return
 		}
 
-		go h.mailer.SendVerificationEmail(user.Email, code)
+		if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+			respond500(w, err)
+			return
+		}
 
 		res := struct {
 			Action string `json:"action"`
@@ -197,7 +201,10 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 		return
 	}
 
-	go h.mailer.SendVerificationEmail(user.Email, code)
+	if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+		respond500(w, err)
+		return
+	}
 
 	respond200(w, 1)
 	return

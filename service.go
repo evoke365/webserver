@@ -2,7 +2,6 @@
 package auth
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -22,7 +21,6 @@ type Config struct {
 // Service defines Auth Service instance structure and dependecies.
 type Service struct {
 	conf     Config
-	mailer   Mailer
 	handler  *Handler
 	callback Callback
 }
@@ -60,20 +58,11 @@ func (s *Service) WithMongoDriver(client *mongo.Client, dbName, collection strin
 	if err != nil {
 		return nil, err
 	}
-	if s.mailer == nil {
-		return nil, errors.New("you must call withMailer first")
-	}
-	s.handler = NewHandler(s.conf, model, s.mailer, s.callback)
+	s.handler = NewHandler(s.conf, model, s.callback)
 	return s, nil
 }
 
-// WithMailer registers a mail service in the Auth Service instance.
-// TODO: Remove Mailer as it should be handled in the Callback methods.
-func (s *Service) WithMailer(ms Mailer) *Service {
-	s.mailer = ms
-	return s
-}
-
+// TODO: handle callback nil case
 func (s *Service) WithCallback(cb Callback) *Service {
 	s.callback = cb
 	return s
