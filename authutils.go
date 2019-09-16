@@ -12,11 +12,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// TODO: Write a proper middleware for interceptor
-func intercept(w http.ResponseWriter, req *http.Request) {
-	log.Printf("Incoming request: %v", req)
-}
-
 func respond200(w http.ResponseWriter, res interface{}) error {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)

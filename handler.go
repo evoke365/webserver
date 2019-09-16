@@ -35,7 +35,6 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 // If user is found, return status code 200 with response body 1
 // If user is not found, return status code 200 with response body 0
 func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	intercept(w, r)
 	param := ps.ByName("id")
 	if len(param) == 0 {
 		respond400(w)
@@ -55,7 +54,6 @@ func (h *Handler) User(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 }
 
 func (h *Handler) Forget(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	intercept(w, r)
 	param := ps.ByName("id")
 	if len(param) == 0 {
 		respond400(w)
@@ -85,7 +83,6 @@ func (h *Handler) Forget(w http.ResponseWriter, r *http.Request, ps httprouter.P
 }
 
 func (h *Handler) SetPassword(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	intercept(w, r)
 	obj := struct {
 		Email    string `json:"email"`
 		Token    string `json:"token"`
@@ -109,7 +106,6 @@ func (h *Handler) SetPassword(w http.ResponseWriter, r *http.Request, _ httprout
 
 // Login handles endpoint /user/login.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	intercept(w, r)
 	obj := struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -167,8 +163,6 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 // Signup handles endpoint /user/signup.
 func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	intercept(w, r)
-
 	obj := struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -211,8 +205,6 @@ func (h *Handler) Signup(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 
 // Verify handles endpoint /user/verify.
 func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	intercept(w, r)
-
 	obj := struct {
 		Email          string `json:"email"`
 		ActivationCode string `json:"code"`
@@ -254,7 +246,6 @@ func (h *Handler) Verify(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 // Authenticate handles endpoint /authenticate/:token
 // TODO: passing token in request header
 func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	intercept(w, r)
 	param := ps.ByName("token")
 	if len(param) == 0 {
 		respond404(w)
@@ -279,7 +270,6 @@ func (h *Handler) Authenticate(w http.ResponseWriter, r *http.Request, ps httpro
 
 // Profile handles endpoint /profile/:id
 func (h *Handler) Profile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	intercept(w, r)
 	param := ps.ByName("id")
 	if len(param) == 0 {
 		respond404(w)
