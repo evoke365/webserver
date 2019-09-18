@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -28,7 +27,8 @@ func NewHandler(c Config, model Model, cb Callback) *Handler {
 
 // Health handles endpoint /health.
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprintf(w, "Auth service is up and running")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Auth service is up and running"))
 }
 
 // User handles endpoint /user/find/:id
