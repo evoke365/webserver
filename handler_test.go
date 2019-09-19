@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -48,9 +50,39 @@ func TestForget200(t *testing.T) {
 	testHandler := NewHandler(c, &model200{}, &noopCallback{})
 
 	router := httprouter.New()
-	router.GET("/user/forget/:id", testHandler.Forget)
+	router.PUT("/user/forget/:id", testHandler.Forget)
 
-	req, _ := http.NewRequest("GET", "/user/forget/123", nil)
+	req, _ := http.NewRequest("PUT", "/user/forget/123", nil)
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Fatal("non 200 status")
+	}
+}
+
+func TestSetPassword200(t *testing.T) {
+	c := Config{1, 2}
+	testHandler := NewHandler(c, &model200{}, &noopCallback{})
+
+	router := httprouter.New()
+	router.PUT("/user/forget", testHandler.SetPassword)
+
+	obj := struct {
+		Email    string `json:"email"`
+		Token    string `json:"token"`
+		Password string `json:"password"`
+	}{
+		Email:    "test@test.com",
+		Token:    "test-token",
+		Password: "12345",
+	}
+	body, err := json.Marshal(obj)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, _ := http.NewRequest("PUT", "/user/forget", bytes.NewReader(body))
 	rr := httptest.NewRecorder()
 	router.ServeHTTP(rr, req)
 
@@ -94,6 +126,10 @@ func (m *model200) UpdateActiveCode(id, code string, exp time.Time) (*User, erro
 		ActivationCode: "123",
 	}
 	return user, nil
+}
+
+func (m *model200) UpdatePassword(id, tok, pwd string) error {
+	return nil
 }
 
 type model500 struct {
