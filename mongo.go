@@ -29,9 +29,10 @@ func (m *Mongo) GetUser(id string, user *User) error {
 func (m *Mongo) InsertUser(user *User) (string, error) {
 	now := time.Now()
 	tok := newToken()
-	res, err := m.Collection.InsertOne(context.Background(),
+	id := primitive.NewObjectID()
+	if _, err := m.Collection.InsertOne(context.Background(),
 		bson.M{
-			"_id":                    primitive.NewObjectID(),
+			"_id":                    id,
 			"email":                  user.Email,
 			"password":               user.Password,
 			"token":                  tok,
@@ -42,11 +43,10 @@ func (m *Mongo) InsertUser(user *User) (string, error) {
 			"is_active":              user.IsActive,
 			"created":                now,
 			"modified":               now,
-		})
-	if err != nil {
+		}); err != nil {
 		return "", err
 	}
-	return res.InsertedID.(string), nil
+	return id.String(), nil
 }
 
 func (m *Mongo) ActivateUser(id string) error {
