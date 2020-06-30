@@ -1,0 +1,245 @@
+swagger: "2.0"
+info:
+  description: "Reusable authentication server from evok3.io"
+  version: "1.0.0"
+  title: "evok3.io OpenAPI spec"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "aus.jacy@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "api.studybox.io"
+basePath: "/v1"
+tags:
+- name: "health"
+  description: "Healthcheck endpoint"
+  externalDocs:
+    description: "Find out more"
+    url: "http://swagger.io"
+- name: "user"
+  description: "Operations about user"
+  externalDocs:
+    description: "Find out more about user"
+    url: "http://swagger.io"
+schemes:
+- "https"
+paths:
+  /healthz:
+    get:
+      tags:
+      - "health"
+      summary: "Check if service is healthy"
+      description: ""
+      operationId: "healthz"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Successful Operation"
+        "405":
+          description: "Invalid input"
+  /user/find/{id}:
+    get:
+      tags:
+      - "user"
+      summary: "Find user"
+      description: "Find a user by User ID"
+      operationId: "findUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of User"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "404":
+          description: "user not found"
+        "200":
+          description: "successful operation"
+  /user/forget:
+    post:
+      tags:
+      - "user"
+      summary: "start forget password process"
+      description: ""
+      operationId: "forgetPassword"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "User ID to reset password"
+        required: true
+        schema:
+          $ref: "#/definitions/UserForgetRequest"
+      responses:
+        "200":
+          description: "successful operation"
+  /user/password:
+    post:
+      tags:
+      - "user"
+      summary: "set new user password"
+      description: ""
+      operationId: "newPassword"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "set new user password"
+        required: true
+        schema:
+          $ref: "#/definitions/UserPasswordRequest"
+      responses:
+        default:
+          description: "successful operation"
+  /user/login:
+    post:
+      tags:
+      - "user"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Log in a user"
+        required: true
+        schema:
+          $ref: "#/definitions/UserLoginRequest"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid username/password supplied"
+  /user/signup:
+    post:
+      tags:
+      - "user"
+      summary: "Sign up a new user"
+      description: ""
+      operationId: "SignupUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Sign up a new user"
+        required: true
+        schema:
+          $ref: "#/definitions/UserSignupRequets"
+      responses:
+        "200":
+          description: "successful operation"
+  /user/verify:
+    put:
+      tags:
+      - "user"
+      summary: "Verify a user"
+      description: "This can only be done by the logged in user."
+      operationId: "verifyUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/UserVerifyRequest"
+      responses:
+        "200":
+          description: "Successful Operation"
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify users in your account"
+      read:pets: "read your users"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  UserForgetRequest:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+  UserPasswordRequest:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      token:
+        type: "string"
+      password:
+        type: "string"
+  UserLoginRequest:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+  UserSignupRequets:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password: 
+        type: "string"
+      timezone: 
+        type: "integer"
+        format: "int32"
+  UserVerifyRequest:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      code:
+        type: "string"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
