@@ -11,40 +11,50 @@ import (
 	"github.com/go-openapi/runtime"
 )
 
-/*NewPasswordDefault successful operation
+// NewPasswordOKCode is the HTTP code returned for type NewPasswordOK
+const NewPasswordOKCode int = 200
 
-swagger:response newPasswordDefault
+/*NewPasswordOK successful operation
+
+swagger:response newPasswordOK
 */
-type NewPasswordDefault struct {
-	_statusCode int
+type NewPasswordOK struct {
 }
 
-// NewNewPasswordDefault creates NewPasswordDefault with default headers values
-func NewNewPasswordDefault(code int) *NewPasswordDefault {
-	if code <= 0 {
-		code = 500
-	}
+// NewNewPasswordOK creates NewPasswordOK with default headers values
+func NewNewPasswordOK() *NewPasswordOK {
 
-	return &NewPasswordDefault{
-		_statusCode: code,
-	}
-}
-
-// WithStatusCode adds the status to the new password default response
-func (o *NewPasswordDefault) WithStatusCode(code int) *NewPasswordDefault {
-	o._statusCode = code
-	return o
-}
-
-// SetStatusCode sets the status to the new password default response
-func (o *NewPasswordDefault) SetStatusCode(code int) {
-	o._statusCode = code
+	return &NewPasswordOK{}
 }
 
 // WriteResponse to the client
-func (o *NewPasswordDefault) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *NewPasswordOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(o._statusCode)
+	rw.WriteHeader(200)
+}
+
+// NewPasswordInternalServerErrorCode is the HTTP code returned for type NewPasswordInternalServerError
+const NewPasswordInternalServerErrorCode int = 500
+
+/*NewPasswordInternalServerError internal error
+
+swagger:response newPasswordInternalServerError
+*/
+type NewPasswordInternalServerError struct {
+}
+
+// NewNewPasswordInternalServerError creates NewPasswordInternalServerError with default headers values
+func NewNewPasswordInternalServerError() *NewPasswordInternalServerError {
+
+	return &NewPasswordInternalServerError{}
+}
+
+// WriteResponse to the client
+func (o *NewPasswordInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(500)
 }

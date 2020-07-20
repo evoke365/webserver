@@ -34,3 +34,27 @@ func (o *SignupUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pr
 
 	rw.WriteHeader(200)
 }
+
+// SignupUserInternalServerErrorCode is the HTTP code returned for type SignupUserInternalServerError
+const SignupUserInternalServerErrorCode int = 500
+
+/*SignupUserInternalServerError internal error
+
+swagger:response signupUserInternalServerError
+*/
+type SignupUserInternalServerError struct {
+}
+
+// NewSignupUserInternalServerError creates SignupUserInternalServerError with default headers values
+func NewSignupUserInternalServerError() *SignupUserInternalServerError {
+
+	return &SignupUserInternalServerError{}
+}
+
+// WriteResponse to the client
+func (o *SignupUserInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(500)
+}

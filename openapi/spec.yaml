@@ -9,7 +9,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "api.studybox.io"
+host: "api.evoke365.net"
 basePath: "/v1"
 tags:
 - name: "health"
@@ -56,10 +56,14 @@ paths:
         type: "integer"
         format: "int64"
       responses:
-        "404":
+        "204":
           description: "user not found"
         "200":
           description: "successful operation"
+        "500":
+          description: "internal error"
+        "400":
+          description: "bad request"
   /user/forget:
     post:
       tags:
@@ -79,6 +83,10 @@ paths:
       responses:
         "200":
           description: "successful operation"
+        "500":
+          description: "internal error"
+        "400":
+          description: "bad request"
   /user/password:
     post:
       tags:
@@ -96,8 +104,10 @@ paths:
         schema:
           $ref: "#/definitions/UserPasswordRequest"
       responses:
-        default:
+        "200":
           description: "successful operation"
+        "500":
+          description: "internal error"
   /user/login:
     post:
       tags:
@@ -119,19 +129,10 @@ paths:
       responses:
         "200":
           description: "successful operation"
-          schema:
-            type: "string"
-          headers:
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
         "400":
           description: "Invalid username/password supplied"
+        "500":
+          description: "internal error"
   /user/signup:
     post:
       tags:
@@ -153,6 +154,8 @@ paths:
       responses:
         "200":
           description: "successful operation"
+        "500":
+          description: "internal error"
   /user/verify:
     put:
       tags:
@@ -176,10 +179,10 @@ paths:
           description: "Successful Operation"
         "400":
           description: "Invalid user supplied"
-        "404":
-          description: "User not found"
+        "500":
+          description: "internal error"
 securityDefinitions:
-  petstore_auth:
+  api_auth:
     type: "oauth2"
     authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
     flow: "implicit"

@@ -35,7 +35,7 @@ func init() {
     },
     "version": "1.0.0"
   },
-  "host": "api.studybox.io",
+  "host": "api.evoke365.net",
   "basePath": "/v1",
   "paths": {
     "/healthz": {
@@ -83,8 +83,14 @@ func init() {
           "200": {
             "description": "successful operation"
           },
-          "404": {
+          "204": {
             "description": "user not found"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -113,6 +119,12 @@ func init() {
         "responses": {
           "200": {
             "description": "successful operation"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -143,25 +155,13 @@ func init() {
         ],
         "responses": {
           "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "string"
-            },
-            "headers": {
-              "X-Expires-After": {
-                "type": "string",
-                "format": "date-time",
-                "description": "date in UTC when token expires"
-              },
-              "X-Rate-Limit": {
-                "type": "integer",
-                "format": "int32",
-                "description": "calls per hour allowed by the user"
-              }
-            }
+            "description": "successful operation"
           },
           "400": {
             "description": "Invalid username/password supplied"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -188,8 +188,11 @@ func init() {
           }
         ],
         "responses": {
-          "default": {
+          "200": {
             "description": "successful operation"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -221,6 +224,9 @@ func init() {
         "responses": {
           "200": {
             "description": "successful operation"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -257,8 +263,8 @@ func init() {
           "400": {
             "description": "Invalid user supplied"
           },
-          "404": {
-            "description": "User not found"
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -342,12 +348,7 @@ func init() {
     }
   },
   "securityDefinitions": {
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
-      "in": "header"
-    },
-    "petstore_auth": {
+    "api_auth": {
       "type": "oauth2",
       "flow": "implicit",
       "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
@@ -355,6 +356,11 @@ func init() {
         "read:pets": "read your users",
         "write:pets": "modify users in your account"
       }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
     }
   },
   "tags": [
@@ -398,7 +404,7 @@ func init() {
     },
     "version": "1.0.0"
   },
-  "host": "api.studybox.io",
+  "host": "api.evoke365.net",
   "basePath": "/v1",
   "paths": {
     "/healthz": {
@@ -446,8 +452,14 @@ func init() {
           "200": {
             "description": "successful operation"
           },
-          "404": {
+          "204": {
             "description": "user not found"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -476,6 +488,12 @@ func init() {
         "responses": {
           "200": {
             "description": "successful operation"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -506,25 +524,13 @@ func init() {
         ],
         "responses": {
           "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "string"
-            },
-            "headers": {
-              "X-Expires-After": {
-                "type": "string",
-                "format": "date-time",
-                "description": "date in UTC when token expires"
-              },
-              "X-Rate-Limit": {
-                "type": "integer",
-                "format": "int32",
-                "description": "calls per hour allowed by the user"
-              }
-            }
+            "description": "successful operation"
           },
           "400": {
             "description": "Invalid username/password supplied"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -551,8 +557,11 @@ func init() {
           }
         ],
         "responses": {
-          "default": {
+          "200": {
             "description": "successful operation"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -584,6 +593,9 @@ func init() {
         "responses": {
           "200": {
             "description": "successful operation"
+          },
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -620,8 +632,8 @@ func init() {
           "400": {
             "description": "Invalid user supplied"
           },
-          "404": {
-            "description": "User not found"
+          "500": {
+            "description": "internal error"
           }
         }
       }
@@ -705,12 +717,7 @@ func init() {
     }
   },
   "securityDefinitions": {
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
-      "in": "header"
-    },
-    "petstore_auth": {
+    "api_auth": {
       "type": "oauth2",
       "flow": "implicit",
       "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
@@ -718,6 +725,11 @@ func init() {
         "read:pets": "read your users",
         "write:pets": "modify users in your account"
       }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
     }
   },
   "tags": [

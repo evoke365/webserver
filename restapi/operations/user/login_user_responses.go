@@ -9,8 +9,6 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 )
 
 // LoginUserOKCode is the HTTP code returned for type LoginUserOK
@@ -21,19 +19,6 @@ const LoginUserOKCode int = 200
 swagger:response loginUserOK
 */
 type LoginUserOK struct {
-	/*date in UTC when token expires
-
-	 */
-	XExpiresAfter strfmt.DateTime `json:"X-Expires-After"`
-	/*calls per hour allowed by the user
-
-	 */
-	XRateLimit int32 `json:"X-Rate-Limit"`
-
-	/*
-	  In: Body
-	*/
-	Payload string `json:"body,omitempty"`
 }
 
 // NewLoginUserOK creates LoginUserOK with default headers values
@@ -42,61 +27,12 @@ func NewLoginUserOK() *LoginUserOK {
 	return &LoginUserOK{}
 }
 
-// WithXExpiresAfter adds the xExpiresAfter to the login user o k response
-func (o *LoginUserOK) WithXExpiresAfter(xExpiresAfter strfmt.DateTime) *LoginUserOK {
-	o.XExpiresAfter = xExpiresAfter
-	return o
-}
-
-// SetXExpiresAfter sets the xExpiresAfter to the login user o k response
-func (o *LoginUserOK) SetXExpiresAfter(xExpiresAfter strfmt.DateTime) {
-	o.XExpiresAfter = xExpiresAfter
-}
-
-// WithXRateLimit adds the xRateLimit to the login user o k response
-func (o *LoginUserOK) WithXRateLimit(xRateLimit int32) *LoginUserOK {
-	o.XRateLimit = xRateLimit
-	return o
-}
-
-// SetXRateLimit sets the xRateLimit to the login user o k response
-func (o *LoginUserOK) SetXRateLimit(xRateLimit int32) {
-	o.XRateLimit = xRateLimit
-}
-
-// WithPayload adds the payload to the login user o k response
-func (o *LoginUserOK) WithPayload(payload string) *LoginUserOK {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the login user o k response
-func (o *LoginUserOK) SetPayload(payload string) {
-	o.Payload = payload
-}
-
 // WriteResponse to the client
 func (o *LoginUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	// response header X-Expires-After
-
-	xExpiresAfter := o.XExpiresAfter.String()
-	if xExpiresAfter != "" {
-		rw.Header().Set("X-Expires-After", xExpiresAfter)
-	}
-
-	// response header X-Rate-Limit
-
-	xRateLimit := swag.FormatInt32(o.XRateLimit)
-	if xRateLimit != "" {
-		rw.Header().Set("X-Rate-Limit", xRateLimit)
-	}
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
-	}
 }
 
 // LoginUserBadRequestCode is the HTTP code returned for type LoginUserBadRequest
@@ -121,4 +57,28 @@ func (o *LoginUserBadRequest) WriteResponse(rw http.ResponseWriter, producer run
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(400)
+}
+
+// LoginUserInternalServerErrorCode is the HTTP code returned for type LoginUserInternalServerError
+const LoginUserInternalServerErrorCode int = 500
+
+/*LoginUserInternalServerError internal error
+
+swagger:response loginUserInternalServerError
+*/
+type LoginUserInternalServerError struct {
+}
+
+// NewLoginUserInternalServerError creates LoginUserInternalServerError with default headers values
+func NewLoginUserInternalServerError() *LoginUserInternalServerError {
+
+	return &LoginUserInternalServerError{}
+}
+
+// WriteResponse to the client
+func (o *LoginUserInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(500)
 }

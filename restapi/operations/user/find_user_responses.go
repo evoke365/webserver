@@ -35,26 +35,74 @@ func (o *FindUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Prod
 	rw.WriteHeader(200)
 }
 
-// FindUserNotFoundCode is the HTTP code returned for type FindUserNotFound
-const FindUserNotFoundCode int = 404
+// FindUserNoContentCode is the HTTP code returned for type FindUserNoContent
+const FindUserNoContentCode int = 204
 
-/*FindUserNotFound user not found
+/*FindUserNoContent user not found
 
-swagger:response findUserNotFound
+swagger:response findUserNoContent
 */
-type FindUserNotFound struct {
+type FindUserNoContent struct {
 }
 
-// NewFindUserNotFound creates FindUserNotFound with default headers values
-func NewFindUserNotFound() *FindUserNotFound {
+// NewFindUserNoContent creates FindUserNoContent with default headers values
+func NewFindUserNoContent() *FindUserNoContent {
 
-	return &FindUserNotFound{}
+	return &FindUserNoContent{}
 }
 
 // WriteResponse to the client
-func (o *FindUserNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *FindUserNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(404)
+	rw.WriteHeader(204)
+}
+
+// FindUserBadRequestCode is the HTTP code returned for type FindUserBadRequest
+const FindUserBadRequestCode int = 400
+
+/*FindUserBadRequest bad request
+
+swagger:response findUserBadRequest
+*/
+type FindUserBadRequest struct {
+}
+
+// NewFindUserBadRequest creates FindUserBadRequest with default headers values
+func NewFindUserBadRequest() *FindUserBadRequest {
+
+	return &FindUserBadRequest{}
+}
+
+// WriteResponse to the client
+func (o *FindUserBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(400)
+}
+
+// FindUserInternalServerErrorCode is the HTTP code returned for type FindUserInternalServerError
+const FindUserInternalServerErrorCode int = 500
+
+/*FindUserInternalServerError internal error
+
+swagger:response findUserInternalServerError
+*/
+type FindUserInternalServerError struct {
+}
+
+// NewFindUserInternalServerError creates FindUserInternalServerError with default headers values
+func NewFindUserInternalServerError() *FindUserInternalServerError {
+
+	return &FindUserInternalServerError{}
+}
+
+// WriteResponse to the client
+func (o *FindUserInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(500)
 }

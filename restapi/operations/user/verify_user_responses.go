@@ -59,26 +59,26 @@ func (o *VerifyUserBadRequest) WriteResponse(rw http.ResponseWriter, producer ru
 	rw.WriteHeader(400)
 }
 
-// VerifyUserNotFoundCode is the HTTP code returned for type VerifyUserNotFound
-const VerifyUserNotFoundCode int = 404
+// VerifyUserInternalServerErrorCode is the HTTP code returned for type VerifyUserInternalServerError
+const VerifyUserInternalServerErrorCode int = 500
 
-/*VerifyUserNotFound User not found
+/*VerifyUserInternalServerError internal error
 
-swagger:response verifyUserNotFound
+swagger:response verifyUserInternalServerError
 */
-type VerifyUserNotFound struct {
+type VerifyUserInternalServerError struct {
 }
 
-// NewVerifyUserNotFound creates VerifyUserNotFound with default headers values
-func NewVerifyUserNotFound() *VerifyUserNotFound {
+// NewVerifyUserInternalServerError creates VerifyUserInternalServerError with default headers values
+func NewVerifyUserInternalServerError() *VerifyUserInternalServerError {
 
-	return &VerifyUserNotFound{}
+	return &VerifyUserInternalServerError{}
 }
 
 // WriteResponse to the client
-func (o *VerifyUserNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *VerifyUserInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(404)
+	rw.WriteHeader(500)
 }
