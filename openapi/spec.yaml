@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
-  description: "Reusable authentication server from evok3.io"
+  description: "Reusable authentication server from evoke365.net"
   version: "1.0.0"
-  title: "evok3.io OpenAPI spec"
+  title: "evoke365.net OpenAPI spec"
   termsOfService: "http://swagger.io/terms/"
   contact:
     email: "aus.jacy@gmail.com"
