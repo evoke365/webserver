@@ -10,22 +10,22 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// UserForgetRequest user forget request
+// AutheticateProfileRequest autheticate profile request
 //
-// swagger:model UserForgetRequest
-type UserForgetRequest struct {
+// swagger:model AutheticateProfileRequest
+type AutheticateProfileRequest struct {
 
-	// id
-	ID string `json:"id,omitempty"`
+	// token
+	Token string `json:"token,omitempty"`
 }
 
-// Validate validates this user forget request
-func (m *UserForgetRequest) Validate(formats strfmt.Registry) error {
+// Validate validates this autheticate profile request
+func (m *AutheticateProfileRequest) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *UserForgetRequest) MarshalBinary() ([]byte, error) {
+func (m *AutheticateProfileRequest) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -33,8 +33,8 @@ func (m *UserForgetRequest) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UserForgetRequest) UnmarshalBinary(b []byte) error {
-	var res UserForgetRequest
+func (m *AutheticateProfileRequest) UnmarshalBinary(b []byte) error {
+	var res AutheticateProfileRequest
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

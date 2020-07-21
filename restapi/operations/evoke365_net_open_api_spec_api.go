@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"github.com/jacygao/auth/restapi/operations/health"
+	"github.com/jacygao/auth/restapi/operations/profile"
 	"github.com/jacygao/auth/restapi/operations/user"
 )
 
@@ -47,11 +48,17 @@ func NewEvoke365NetOpenAPISpecAPI(spec *loads.Document) *Evoke365NetOpenAPISpecA
 		UserSignupUserHandler: user.SignupUserHandlerFunc(func(params user.SignupUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.SignupUser has not yet been implemented")
 		}),
+		ProfileAutheticateProfileHandler: profile.AutheticateProfileHandlerFunc(func(params profile.AutheticateProfileParams) middleware.Responder {
+			return middleware.NotImplemented("operation profile.AutheticateProfile has not yet been implemented")
+		}),
 		UserFindUserHandler: user.FindUserHandlerFunc(func(params user.FindUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.FindUser has not yet been implemented")
 		}),
 		UserForgetPasswordHandler: user.ForgetPasswordHandlerFunc(func(params user.ForgetPasswordParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.ForgetPassword has not yet been implemented")
+		}),
+		ProfileGetProfileHandler: profile.GetProfileHandlerFunc(func(params profile.GetProfileParams) middleware.Responder {
+			return middleware.NotImplemented("operation profile.GetProfile has not yet been implemented")
 		}),
 		HealthHealthzHandler: health.HealthzHandlerFunc(func(params health.HealthzParams) middleware.Responder {
 			return middleware.NotImplemented("operation health.Healthz has not yet been implemented")
@@ -100,10 +107,14 @@ type Evoke365NetOpenAPISpecAPI struct {
 
 	// UserSignupUserHandler sets the operation handler for the signup user operation
 	UserSignupUserHandler user.SignupUserHandler
+	// ProfileAutheticateProfileHandler sets the operation handler for the autheticate profile operation
+	ProfileAutheticateProfileHandler profile.AutheticateProfileHandler
 	// UserFindUserHandler sets the operation handler for the find user operation
 	UserFindUserHandler user.FindUserHandler
 	// UserForgetPasswordHandler sets the operation handler for the forget password operation
 	UserForgetPasswordHandler user.ForgetPasswordHandler
+	// ProfileGetProfileHandler sets the operation handler for the get profile operation
+	ProfileGetProfileHandler profile.GetProfileHandler
 	// HealthHealthzHandler sets the operation handler for the healthz operation
 	HealthHealthzHandler health.HealthzHandler
 	// UserLoginUserHandler sets the operation handler for the login user operation
@@ -181,11 +192,17 @@ func (o *Evoke365NetOpenAPISpecAPI) Validate() error {
 	if o.UserSignupUserHandler == nil {
 		unregistered = append(unregistered, "user.SignupUserHandler")
 	}
+	if o.ProfileAutheticateProfileHandler == nil {
+		unregistered = append(unregistered, "profile.AutheticateProfileHandler")
+	}
 	if o.UserFindUserHandler == nil {
 		unregistered = append(unregistered, "user.FindUserHandler")
 	}
 	if o.UserForgetPasswordHandler == nil {
 		unregistered = append(unregistered, "user.ForgetPasswordHandler")
+	}
+	if o.ProfileGetProfileHandler == nil {
+		unregistered = append(unregistered, "profile.GetProfileHandler")
 	}
 	if o.HealthHealthzHandler == nil {
 		unregistered = append(unregistered, "health.HealthzHandler")
@@ -291,6 +308,10 @@ func (o *Evoke365NetOpenAPISpecAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/user/signup"] = user.NewSignupUser(o.context, o.UserSignupUserHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/profile/authenticate"] = profile.NewAutheticateProfile(o.context, o.ProfileAutheticateProfileHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -299,6 +320,10 @@ func (o *Evoke365NetOpenAPISpecAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/user/forget"] = user.NewForgetPassword(o.context, o.UserForgetPasswordHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/profile/{id}"] = profile.NewGetProfile(o.context, o.ProfileGetProfileHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

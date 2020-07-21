@@ -58,6 +58,78 @@ func init() {
         }
       }
     },
+    "/profile/authenticate": {
+      "post": {
+        "description": "used for authetication between internal systems",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "summary": "Autheticate a profile",
+        "operationId": "autheticateProfile",
+        "parameters": [
+          {
+            "description": "token to authenticate",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AutheticateProfileRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "400": {
+            "description": "Invalid user supplied"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/profile/{id}": {
+      "post": {
+        "description": "used for authetication between internal systems",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "summary": "Autheticate a profile",
+        "operationId": "getProfile",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "ID of Profile",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "204": {
+            "description": "profile not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/user/find/{id}": {
       "get": {
         "description": "Find a user by User ID",
@@ -71,8 +143,7 @@ func init() {
         "operationId": "findUser",
         "parameters": [
           {
-            "type": "integer",
-            "format": "int64",
+            "type": "string",
             "description": "ID of User",
             "name": "id",
             "in": "path",
@@ -286,12 +357,19 @@ func init() {
         }
       }
     },
+    "AutheticateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
     "UserForgetRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         }
       }
     },
@@ -427,6 +505,78 @@ func init() {
         }
       }
     },
+    "/profile/authenticate": {
+      "post": {
+        "description": "used for authetication between internal systems",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "summary": "Autheticate a profile",
+        "operationId": "autheticateProfile",
+        "parameters": [
+          {
+            "description": "token to authenticate",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AutheticateProfileRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "400": {
+            "description": "Invalid user supplied"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/profile/{id}": {
+      "post": {
+        "description": "used for authetication between internal systems",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "profile"
+        ],
+        "summary": "Autheticate a profile",
+        "operationId": "getProfile",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "description": "ID of Profile",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "204": {
+            "description": "profile not found"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/user/find/{id}": {
       "get": {
         "description": "Find a user by User ID",
@@ -440,8 +590,7 @@ func init() {
         "operationId": "findUser",
         "parameters": [
           {
-            "type": "integer",
-            "format": "int64",
+            "type": "string",
             "description": "ID of User",
             "name": "id",
             "in": "path",
@@ -655,12 +804,19 @@ func init() {
         }
       }
     },
+    "AutheticateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
     "UserForgetRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         }
       }
     },
