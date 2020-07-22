@@ -6,30 +6,66 @@ import (
 	"github.com/go-openapi/runtime"
 )
 
-type DefaultResponderOK struct {
+type OK struct {
+	response []byte
 }
 
-func (dr *DefaultResponderOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (r *OK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 	rw.WriteHeader(http.StatusOK)
+	if len(r.response) > 0 {
+		rw.Write(r.response)
+	}
 }
 
-type DefaultResponderNoContent struct {
+func (r *OK) WithResponse(response []byte) *OK {
+	r.response = response
+	return r
 }
 
-func (dr *DefaultResponderNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func DefaultOK() *OK {
+	return &OK{}
+}
+
+type NoContent struct {
+}
+
+func (r *NoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 	rw.WriteHeader(http.StatusNoContent)
 }
 
-type DefaultResponderBadRequest struct {
+func DefaultNoContent() *NoContent {
+	return &NoContent{}
 }
 
-func (dr *DefaultResponderBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+type BadRequest struct {
+}
+
+func (r *BadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 	rw.WriteHeader(http.StatusBadRequest)
 }
 
-type DefaultResponderError struct {
+func DefaultBadRequest() *BadRequest {
+	return &BadRequest{}
 }
 
-func (dr *DefaultResponderError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+type Unauthorised struct {
+}
+
+func (r *Unauthorised) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+	rw.WriteHeader(http.StatusUnauthorized)
+}
+
+func DefaultUnauthorised() *Unauthorised {
+	return &Unauthorised{}
+}
+
+type ServerError struct {
+}
+
+func (r *ServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 	rw.WriteHeader(http.StatusInternalServerError)
+}
+
+func DefaultServerError() *ServerError {
+	return &ServerError{}
 }

@@ -130,6 +130,8 @@ paths:
           description: "successful operation"
         "400":
           description: "Invalid username/password supplied"
+        "401":
+          description: "Unauthorised user credentials"
         "500":
           description: "internal error"
   /user/signup:

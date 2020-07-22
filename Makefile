@@ -1,3 +1,7 @@
+setup:
+	brew tap go-swagger/go-swagger
+	brew install go-swagger
+
 gen:
 	swagger generate server -f ./openapi/spec.yaml
 
