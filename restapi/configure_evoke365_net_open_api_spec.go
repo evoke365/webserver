@@ -4,7 +4,9 @@ package restapi
 
 import (
 	"crypto/tls"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
@@ -14,6 +16,7 @@ import (
 	"github.com/jacygao/auth/restapi/operations"
 	"github.com/jacygao/auth/restapi/operations/health"
 	"github.com/jacygao/auth/restapi/operations/user"
+	"github.com/jacygao/auth/store"
 )
 
 //go:generate swagger generate server --target ../../auth --name Evoke365NetOpenAPISpec --spec ../openapi/spec.yaml
@@ -36,21 +39,25 @@ func configureAPI(api *operations.Evoke365NetOpenAPISpecAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	controller := controller.New()
+	mongoStore, err := setupMongoStore()
+	if err != nil {
+		log.Fatal(err)
+	}
+	controller := controller.New(mongoStore)
 
 	if api.UserSignupUserHandler == nil {
 		api.UserSignupUserHandler = user.SignupUserHandlerFunc(func(params user.SignupUserParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.SignupUser has not yet been implemented")
+			return controller.User.Signup(&params)
 		})
 	}
 	if api.UserFindUserHandler == nil {
 		api.UserFindUserHandler = user.FindUserHandlerFunc(func(params user.FindUserParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.FindUser has not yet been implemented")
+			return controller.User.FindUser(&params)
 		})
 	}
 	if api.UserForgetPasswordHandler == nil {
 		api.UserForgetPasswordHandler = user.ForgetPasswordHandlerFunc(func(params user.ForgetPasswordParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.ForgetPassword has not yet been implemented")
+			return controller.User.ForgetPassword(&params)
 		})
 	}
 	if api.HealthHealthzHandler == nil {
@@ -60,17 +67,17 @@ func configureAPI(api *operations.Evoke365NetOpenAPISpecAPI) http.Handler {
 	}
 	if api.UserLoginUserHandler == nil {
 		api.UserLoginUserHandler = user.LoginUserHandlerFunc(func(params user.LoginUserParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.LoginUser has not yet been implemented")
+			return controller.User.LoginUser(&params)
 		})
 	}
 	if api.UserNewPasswordHandler == nil {
 		api.UserNewPasswordHandler = user.NewPasswordHandlerFunc(func(params user.NewPasswordParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.NewPassword has not yet been implemented")
+			return controller.User.NewPassword(&params)
 		})
 	}
 	if api.UserVerifyUserHandler == nil {
 		api.UserVerifyUserHandler = user.VerifyUserHandlerFunc(func(params user.VerifyUserParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.VerifyUser has not yet been implemented")
+			return controller.User.VerifyUser(&params)
 		})
 	}
 
@@ -103,4 +110,18 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	return handler
+}
+
+func setupMongoStore() (*store.MongoDB, error) {
+	mongoConfig := store.MongoConfig{
+		URI:            os.Getenv("MONGO_URI"),
+		DBName:         os.Getenv("DB_NAME"),
+		CollectionName: os.Getenv("COLLECTION_NAME"),
+	}
+
+	if err := mongoConfig.Validate(); err != nil {
+		return nil, err
+	}
+
+	return store.NewMongoDB(mongoConfig)
 }

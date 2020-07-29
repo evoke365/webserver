@@ -11,10 +11,12 @@ import (
 	"github.com/jacygao/auth/store"
 )
 
+// Config defines madetory configuration values to initialise a controller instance.
 type Config struct {
 	VerificationCodeExpiryMinutes int
 }
 
+// DefaultConfig returns a config object with default/recommended values.
 func DefaultConfig() Config {
 	return Config{
 		VerificationCodeExpiryMinutes: 15,
@@ -35,6 +37,7 @@ func NewController(s store.DB, c Config) *Controller {
 	}
 }
 
+// Signup implements the logic of HTTP Handler for /signup.
 func (c *Controller) Signup(req *user.SignupUserParams) middleware.Responder {
 	code := randCode(6)
 
@@ -81,6 +84,7 @@ func (c *Controller) FindUser(req *user.FindUserParams) middleware.Responder {
 	return DefaultOK()
 }
 
+// ForgetPassword implements the HTTP handler logic for /forget
 func (c *Controller) ForgetPassword(req *user.ForgetPasswordParams) middleware.Responder {
 	if len(req.Body.ID) == 0 {
 		return DefaultBadRequest()
@@ -142,6 +146,7 @@ func (c *Controller) LoginUser(req *user.LoginUserParams) middleware.Responder {
 	return DefaultUnauthorised()
 }
 
+// NewPassword implements the HTTP handler logic for /newpassword
 func (c *Controller) NewPassword(req *user.NewPasswordParams) middleware.Responder {
 	if err := c.store.UpdatePassword(req.Body.Email, req.Body.Token, hashMD5(req.Body.Password)); err != nil {
 		log.Println(err.Error())
@@ -150,6 +155,7 @@ func (c *Controller) NewPassword(req *user.NewPasswordParams) middleware.Respond
 	return DefaultOK()
 }
 
+// VerifyUser implements the HTTP handler logic for /verify
 func (c *Controller) VerifyUser(req *user.VerifyUserParams) middleware.Responder {
 	user := &store.User{}
 	if err := c.store.VerifyUser(req.Body.Email, req.Body.Code, user); err != nil {

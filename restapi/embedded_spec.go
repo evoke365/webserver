@@ -231,6 +231,9 @@ func init() {
           "400": {
             "description": "Invalid username/password supplied"
           },
+          "401": {
+            "description": "Unauthorised user credentials"
+          },
           "500": {
             "description": "internal error"
           }
@@ -677,6 +680,9 @@ func init() {
           },
           "400": {
             "description": "Invalid username/password supplied"
+          },
+          "401": {
+            "description": "Unauthorised user credentials"
           },
           "500": {
             "description": "internal error"

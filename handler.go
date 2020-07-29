@@ -106,59 +106,59 @@ func (h *Handler) SetPassword(w http.ResponseWriter, r *http.Request, _ httprout
 
 // Login handles endpoint /user/login.
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	obj := struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}{}
+		obj := struct {
+			Email    string `json:"email"`
+			Password string `json:"password"`
+		}{}
 
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&obj); err != nil {
-		respond500(w, err)
-		return
-	}
-
-	user := &User{}
-	if err := h.model.GetUser(obj.Email, user); err != nil {
-		respond500(w, err)
-		return
-	}
-	if user == nil {
-		respond404(w)
-		return
-	}
-	if !user.IsActive {
-		code := encode(6)
-		exp := time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
-		user, err := h.model.UpdateActiveCode(obj.Email, code, exp)
-		if err != nil {
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&obj); err != nil {
 			respond500(w, err)
 			return
 		}
 
-		if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+		user := &User{}
+		if err := h.model.GetUser(obj.Email, user); err != nil {
 			respond500(w, err)
 			return
 		}
+		if user == nil {
+			respond404(w)
+			return
+		}
+		if !user.IsActive {
+			code := encode(6)
+			exp := time.Now().Add(time.Minute * time.Duration(h.conf.VerificationCodeExpiryMinutes))
+			user, err := h.model.UpdateActiveCode(obj.Email, code, exp)
+			if err != nil {
+				respond500(w, err)
+				return
+			}
 
-		res := struct {
-			Action string `json:"action"`
-		}{
-			"verify",
+			if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+				respond500(w, err)
+				return
+			}
+
+			res := struct {
+				Action string `json:"action"`
+			}{
+				"verify",
+			}
+			respond200(w, res)
+			return
 		}
-		respond200(w, res)
-		return
-	}
-	if user.Password == getMD5Hash(obj.Password) {
-		res := struct {
-			Token string `json:"token"`
-		}{
-			user.Token,
+		if user.Password == getMD5Hash(obj.Password) {
+			res := struct {
+				Token string `json:"token"`
+			}{
+				user.Token,
+			}
+			respond200(w, res)
+			return
 		}
-		respond200(w, res)
+		respond401(w)
 		return
-	}
-	respond401(w)
-	return
 }
 
 // Signup handles endpoint /user/signup.

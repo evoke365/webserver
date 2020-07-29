@@ -59,6 +59,30 @@ func (o *LoginUserBadRequest) WriteResponse(rw http.ResponseWriter, producer run
 	rw.WriteHeader(400)
 }
 
+// LoginUserUnauthorizedCode is the HTTP code returned for type LoginUserUnauthorized
+const LoginUserUnauthorizedCode int = 401
+
+/*LoginUserUnauthorized Unauthorised user credentials
+
+swagger:response loginUserUnauthorized
+*/
+type LoginUserUnauthorized struct {
+}
+
+// NewLoginUserUnauthorized creates LoginUserUnauthorized with default headers values
+func NewLoginUserUnauthorized() *LoginUserUnauthorized {
+
+	return &LoginUserUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *LoginUserUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
 // LoginUserInternalServerErrorCode is the HTTP code returned for type LoginUserInternalServerError
 const LoginUserInternalServerErrorCode int = 500
 
