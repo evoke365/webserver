@@ -118,7 +118,6 @@ func setupMongoStore() (*store.MongoDB, error) {
 		DBName:         os.Getenv("DB_NAME"),
 		CollectionName: os.Getenv("COLLECTION_NAME"),
 	}
-
 	if err := mongoConfig.Validate(); err != nil {
 		return nil, err
 	}
