@@ -45,41 +45,33 @@ func configureAPI(api *operations.Evoke365NetOpenAPISpecAPI) http.Handler {
 	}
 	controller := controller.New(mongoStore)
 
-	if api.UserSignupUserHandler == nil {
-		api.UserSignupUserHandler = user.SignupUserHandlerFunc(func(params user.SignupUserParams) middleware.Responder {
-			return controller.User.Signup(&params)
-		})
-	}
-	if api.UserFindUserHandler == nil {
-		api.UserFindUserHandler = user.FindUserHandlerFunc(func(params user.FindUserParams) middleware.Responder {
-			return controller.User.FindUser(&params)
-		})
-	}
-	if api.UserForgetPasswordHandler == nil {
-		api.UserForgetPasswordHandler = user.ForgetPasswordHandlerFunc(func(params user.ForgetPasswordParams) middleware.Responder {
-			return controller.User.ForgetPassword(&params)
-		})
-	}
-	if api.HealthHealthzHandler == nil {
-		api.HealthHealthzHandler = health.HealthzHandlerFunc(func(params health.HealthzParams) middleware.Responder {
-			return controller.Health.Healthz()
-		})
-	}
-	if api.UserLoginUserHandler == nil {
-		api.UserLoginUserHandler = user.LoginUserHandlerFunc(func(params user.LoginUserParams) middleware.Responder {
-			return controller.User.LoginUser(&params)
-		})
-	}
-	if api.UserNewPasswordHandler == nil {
-		api.UserNewPasswordHandler = user.NewPasswordHandlerFunc(func(params user.NewPasswordParams) middleware.Responder {
-			return controller.User.NewPassword(&params)
-		})
-	}
-	if api.UserVerifyUserHandler == nil {
-		api.UserVerifyUserHandler = user.VerifyUserHandlerFunc(func(params user.VerifyUserParams) middleware.Responder {
-			return controller.User.VerifyUser(&params)
-		})
-	}
+	api.HealthHealthzHandler = health.HealthzHandlerFunc(func(params health.HealthzParams) middleware.Responder {
+		return controller.Health.Healthz()
+	})
+
+	api.UserSignupUserHandler = user.SignupUserHandlerFunc(func(params user.SignupUserParams) middleware.Responder {
+		return controller.User.Signup(&params)
+	})
+
+	api.UserFindUserHandler = user.FindUserHandlerFunc(func(params user.FindUserParams) middleware.Responder {
+		return controller.User.FindUser(&params)
+	})
+
+	api.UserForgetPasswordHandler = user.ForgetPasswordHandlerFunc(func(params user.ForgetPasswordParams) middleware.Responder {
+		return controller.User.ForgetPassword(&params)
+	})
+
+	api.UserLoginUserHandler = user.LoginUserHandlerFunc(func(params user.LoginUserParams) middleware.Responder {
+		return controller.User.LoginUser(&params)
+	})
+
+	api.UserNewPasswordHandler = user.NewPasswordHandlerFunc(func(params user.NewPasswordParams) middleware.Responder {
+		return controller.User.NewPassword(&params)
+	})
+
+	api.UserVerifyUserHandler = user.VerifyUserHandlerFunc(func(params user.VerifyUserParams) middleware.Responder {
+		return controller.User.VerifyUser(&params)
+	})
 
 	api.PreServerShutdown = func() {}
 
