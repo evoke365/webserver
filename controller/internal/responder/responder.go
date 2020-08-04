@@ -1,4 +1,4 @@
-package user
+package responder
 
 import (
 	"net/http"

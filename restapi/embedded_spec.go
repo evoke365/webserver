@@ -109,8 +109,7 @@ func init() {
         "operationId": "getProfile",
         "parameters": [
           {
-            "type": "integer",
-            "format": "int64",
+            "type": "string",
             "description": "ID of Profile",
             "name": "id",
             "in": "path",
@@ -559,8 +558,7 @@ func init() {
         "operationId": "getProfile",
         "parameters": [
           {
-            "type": "integer",
-            "format": "int64",
+            "type": "string",
             "description": "ID of Profile",
             "name": "id",
             "in": "path",
