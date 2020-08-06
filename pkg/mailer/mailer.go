@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"strconv"
 
 	"gopkg.in/gomail.v2"
 )
@@ -11,7 +12,7 @@ import (
 // Config contains required values that defines a mailer client.
 type Config struct {
 	Hostname string
-	Port     int
+	Port     string
 	Username string
 	Password string
 }
@@ -64,7 +65,8 @@ func (c *Client) SendVerificationEmail(m Mail) error {
 	msg.SetHeader("Subject", "Verify you account")
 	msg.SetBody("text/html", tpl.String())
 
-	d := gomail.NewDialer(c.conf.Hostname, c.conf.Port, c.conf.Username, c.conf.Password)
+	port, _ := strconv.Atoi(c.conf.Port)
+	d := gomail.NewDialer(c.conf.Hostname, port, c.conf.Username, c.conf.Password)
 
 	if err := d.DialAndSend(msg); err != nil {
 		return err

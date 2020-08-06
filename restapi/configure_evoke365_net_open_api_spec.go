@@ -13,6 +13,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 
 	"github.com/jacygao/auth/controller"
+	"github.com/jacygao/auth/pkg/mailer"
 	"github.com/jacygao/auth/restapi/operations"
 	"github.com/jacygao/auth/restapi/operations/health"
 	"github.com/jacygao/auth/restapi/operations/user"
@@ -43,7 +44,7 @@ func configureAPI(api *operations.Evoke365NetOpenAPISpecAPI) http.Handler {
 	if err != nil {
 		log.Fatal(err)
 	}
-	controller := controller.New(mongoStore)
+	controller := controller.New(mongoStore, setupMailer())
 
 	api.HealthHealthzHandler = health.HealthzHandlerFunc(func(params health.HealthzParams) middleware.Responder {
 		return controller.Health.Healthz()
@@ -115,4 +116,14 @@ func setupMongoStore() (*store.MongoDB, error) {
 	}
 
 	return store.NewMongoDB(mongoConfig)
+}
+
+func setupMailer() *mailer.Client {
+	mailerConfig := mailer.Config{
+		Hostname: os.Getenv("MAILER_HOSTNAME"),
+		Port:     os.Getenv("MAILER_PORT"),
+		Username: os.Getenv("MAILER_USERNAME"),
+		Password: os.Getenv("MAILER_PASSWORD"),
+	}
+	return mailer.NewClient(mailerConfig)
 }

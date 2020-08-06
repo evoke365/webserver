@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/jacygao/auth/controller/internal/responder"
+	"github.com/jacygao/auth/pkg/mailer"
 	"github.com/jacygao/auth/restapi/operations/user"
 	"github.com/jacygao/auth/store"
 )
@@ -26,15 +27,17 @@ func DefaultConfig() Config {
 
 // Controller defines HTTP handlers.
 type Controller struct {
-	conf  Config
-	store store.DB
+	conf   Config
+	store  store.DB
+	mailer *mailer.Client
 }
 
 // NewController returns a new instance of Controller.
-func NewController(s store.DB, c Config) *Controller {
+func NewController(s store.DB, m *mailer.Client, c Config) *Controller {
 	return &Controller{
-		conf:  c,
-		store: s,
+		conf:   c,
+		store:  s,
+		mailer: m,
 	}
 }
 
