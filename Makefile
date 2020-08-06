@@ -1,4 +1,5 @@
 .EXPORT_ALL_VARIABLES:
+GO111MODULE:=on
 MONGO_URI:=mongodb://root:example@localhost:27017
 DB_NAME:=evoke365-local
 COLLECTION_NAME:=user

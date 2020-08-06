@@ -221,8 +221,7 @@ paths:
         in: "path"
         description: "ID of Profile"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         "200":
           description: "Successful Operation"
