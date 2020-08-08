@@ -14,14 +14,12 @@ basePath: "/v1"
 tags:
 - name: "health"
   description: "Healthcheck endpoint"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
 - name: "user"
   description: "Operations about user"
-  externalDocs:
-    description: "Find out more about user"
-    url: "http://swagger.io"
+- name: "profile"
+  description: "Operations about authentication"
+- name: "note"
+  description: "Operations about note"
 schemes:
 - "https"
 paths:
@@ -229,18 +227,140 @@ paths:
           description: "profile not found"
         "500":
           description: "internal error"
-securityDefinitions:
-  api_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify users in your account"
-      read:pets: "read your users"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
+  /notes/{userId}:
+    get:
+      tags:
+      - "note"
+      summary: "Get Notes of a user"
+      description: "Retrieve notes by User ID"
+      operationId: "getNotes"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "token"
+        description: "authenticated token"
+        required: true
+        type: "string"
+        format: uuid
+      - name: "userId"
+        in: "path"
+        description: "ID of User"
+        required: true
+        type: "string"
+      responses:
+        "204":
+          description: "user not found"
+        "200":
+          description: "successful operation"
+        "500":
+          description: "internal error"
+        "400":
+          description: "bad request"
+  /note:
+    post:
+      tags:
+      - "note"
+      summary: "user creates a new note"
+      description: "user creates a new note"
+      operationId: "AddNote"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "token"
+        description: "authenticated token"
+        required: true
+        type: "string"
+        format: uuid
+      - in: "body"
+        name: "body"
+        description: "the data of the note"
+        required: true
+        schema:
+          $ref: "#/definitions/AddNoteRequest"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid request body supplied"
+        "401":
+          description: "Unauthorised user credentials"
+        "500":
+          description: "internal error"
+  /note/{id}:
+    put:
+      tags:
+      - "note"
+      summary: "update a note"
+      description: "update a note of a user"
+      operationId: "updateNote"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "token"
+        description: "authenticated token"
+        required: true
+        type: "string"
+        format: uuid
+      - in: "path"
+        name: "id"
+        description: "ID of the note to update"
+        required: true
+        type: "string"
+        format: uuid
+      - in: "body"
+        name: "body"
+        description: "Updated a note"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateNoteRequest"
+      responses:
+        "200":
+          description: "Successful Operation"
+        "400":
+          description: "Invalid request data supplied"
+        "401":
+          description: "Unauthorised user credentials"
+        "500":
+          description: "internal error"
+    delete:
+      tags:
+      - "note"
+      summary: "delete a note"
+      description: "delete a note of a user"
+      operationId: "deleteNote"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "token"
+        description: "authenticated token"
+        required: true
+        type: "string"
+        format: uuid
+      - in: "path"
+        name: "id"
+        description: "ID of the note to delete"
+        required: true
+        type: "string"
+        format: uuid
+      responses:
+        "200":
+          description: "Successful Operation"
+        "400":
+          description: "Invalid request data supplied"
+        "401":
+          description: "Unauthorised user credentials"
+        "500":
+          description: "internal error"
 definitions:
   UserForgetRequest:
     type: "object"
@@ -285,6 +405,18 @@ definitions:
     properties:
       token:
         type: "string"
+  AddNoteRequest:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+      body:
+        type: "string"
+  UpdateNoteRequest:
+    type: "object"
+    properties:
+      isImportant: 
+        type: "boolean"
   ApiResponse:
     type: "object"
     properties:

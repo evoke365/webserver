@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"github.com/jacygao/auth/restapi/operations/health"
+	"github.com/jacygao/auth/restapi/operations/note"
 	"github.com/jacygao/auth/restapi/operations/profile"
 	"github.com/jacygao/auth/restapi/operations/user"
 )
@@ -36,6 +37,7 @@ func NewEvoke365NetOpenAPISpecAPI(spec *loads.Document) *Evoke365NetOpenAPISpecA
 		PreServerShutdown:   func() {},
 		ServerShutdown:      func() {},
 		spec:                spec,
+		useSwaggerUI:        false,
 		ServeError:          errors.ServeError,
 		BasicAuthenticator:  security.BasicAuth,
 		APIKeyAuthenticator: security.APIKeyAuth,
@@ -45,17 +47,26 @@ func NewEvoke365NetOpenAPISpecAPI(spec *loads.Document) *Evoke365NetOpenAPISpecA
 
 		JSONProducer: runtime.JSONProducer(),
 
+		NoteAddNoteHandler: note.AddNoteHandlerFunc(func(params note.AddNoteParams) middleware.Responder {
+			return middleware.NotImplemented("operation note.AddNote has not yet been implemented")
+		}),
 		UserSignupUserHandler: user.SignupUserHandlerFunc(func(params user.SignupUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.SignupUser has not yet been implemented")
 		}),
 		ProfileAutheticateProfileHandler: profile.AutheticateProfileHandlerFunc(func(params profile.AutheticateProfileParams) middleware.Responder {
 			return middleware.NotImplemented("operation profile.AutheticateProfile has not yet been implemented")
 		}),
+		NoteDeleteNoteHandler: note.DeleteNoteHandlerFunc(func(params note.DeleteNoteParams) middleware.Responder {
+			return middleware.NotImplemented("operation note.DeleteNote has not yet been implemented")
+		}),
 		UserFindUserHandler: user.FindUserHandlerFunc(func(params user.FindUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.FindUser has not yet been implemented")
 		}),
 		UserForgetPasswordHandler: user.ForgetPasswordHandlerFunc(func(params user.ForgetPasswordParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.ForgetPassword has not yet been implemented")
+		}),
+		NoteGetNotesHandler: note.GetNotesHandlerFunc(func(params note.GetNotesParams) middleware.Responder {
+			return middleware.NotImplemented("operation note.GetNotes has not yet been implemented")
 		}),
 		ProfileGetProfileHandler: profile.GetProfileHandlerFunc(func(params profile.GetProfileParams) middleware.Responder {
 			return middleware.NotImplemented("operation profile.GetProfile has not yet been implemented")
@@ -68,6 +79,9 @@ func NewEvoke365NetOpenAPISpecAPI(spec *loads.Document) *Evoke365NetOpenAPISpecA
 		}),
 		UserNewPasswordHandler: user.NewPasswordHandlerFunc(func(params user.NewPasswordParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.NewPassword has not yet been implemented")
+		}),
+		NoteUpdateNoteHandler: note.UpdateNoteHandlerFunc(func(params note.UpdateNoteParams) middleware.Responder {
+			return middleware.NotImplemented("operation note.UpdateNote has not yet been implemented")
 		}),
 		UserVerifyUserHandler: user.VerifyUserHandlerFunc(func(params user.VerifyUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.VerifyUser has not yet been implemented")
@@ -86,6 +100,7 @@ type Evoke365NetOpenAPISpecAPI struct {
 	defaultConsumes string
 	defaultProduces string
 	Middleware      func(middleware.Builder) http.Handler
+	useSwaggerUI    bool
 
 	// BasicAuthenticator generates a runtime.Authenticator from the supplied basic auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
@@ -105,14 +120,20 @@ type Evoke365NetOpenAPISpecAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// NoteAddNoteHandler sets the operation handler for the add note operation
+	NoteAddNoteHandler note.AddNoteHandler
 	// UserSignupUserHandler sets the operation handler for the signup user operation
 	UserSignupUserHandler user.SignupUserHandler
 	// ProfileAutheticateProfileHandler sets the operation handler for the autheticate profile operation
 	ProfileAutheticateProfileHandler profile.AutheticateProfileHandler
+	// NoteDeleteNoteHandler sets the operation handler for the delete note operation
+	NoteDeleteNoteHandler note.DeleteNoteHandler
 	// UserFindUserHandler sets the operation handler for the find user operation
 	UserFindUserHandler user.FindUserHandler
 	// UserForgetPasswordHandler sets the operation handler for the forget password operation
 	UserForgetPasswordHandler user.ForgetPasswordHandler
+	// NoteGetNotesHandler sets the operation handler for the get notes operation
+	NoteGetNotesHandler note.GetNotesHandler
 	// ProfileGetProfileHandler sets the operation handler for the get profile operation
 	ProfileGetProfileHandler profile.GetProfileHandler
 	// HealthHealthzHandler sets the operation handler for the healthz operation
@@ -121,6 +142,8 @@ type Evoke365NetOpenAPISpecAPI struct {
 	UserLoginUserHandler user.LoginUserHandler
 	// UserNewPasswordHandler sets the operation handler for the new password operation
 	UserNewPasswordHandler user.NewPasswordHandler
+	// NoteUpdateNoteHandler sets the operation handler for the update note operation
+	NoteUpdateNoteHandler note.UpdateNoteHandler
 	// UserVerifyUserHandler sets the operation handler for the verify user operation
 	UserVerifyUserHandler user.VerifyUserHandler
 	// ServeError is called when an error is received, there is a default handler
@@ -140,6 +163,16 @@ type Evoke365NetOpenAPISpecAPI struct {
 
 	// User defined logger function.
 	Logger func(string, ...interface{})
+}
+
+// UseRedoc for documentation at /docs
+func (o *Evoke365NetOpenAPISpecAPI) UseRedoc() {
+	o.useSwaggerUI = false
+}
+
+// UseSwaggerUI for documentation at /docs
+func (o *Evoke365NetOpenAPISpecAPI) UseSwaggerUI() {
+	o.useSwaggerUI = true
 }
 
 // SetDefaultProduces sets the default produces media type
@@ -189,17 +222,26 @@ func (o *Evoke365NetOpenAPISpecAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.NoteAddNoteHandler == nil {
+		unregistered = append(unregistered, "note.AddNoteHandler")
+	}
 	if o.UserSignupUserHandler == nil {
 		unregistered = append(unregistered, "user.SignupUserHandler")
 	}
 	if o.ProfileAutheticateProfileHandler == nil {
 		unregistered = append(unregistered, "profile.AutheticateProfileHandler")
 	}
+	if o.NoteDeleteNoteHandler == nil {
+		unregistered = append(unregistered, "note.DeleteNoteHandler")
+	}
 	if o.UserFindUserHandler == nil {
 		unregistered = append(unregistered, "user.FindUserHandler")
 	}
 	if o.UserForgetPasswordHandler == nil {
 		unregistered = append(unregistered, "user.ForgetPasswordHandler")
+	}
+	if o.NoteGetNotesHandler == nil {
+		unregistered = append(unregistered, "note.GetNotesHandler")
 	}
 	if o.ProfileGetProfileHandler == nil {
 		unregistered = append(unregistered, "profile.GetProfileHandler")
@@ -212,6 +254,9 @@ func (o *Evoke365NetOpenAPISpecAPI) Validate() error {
 	}
 	if o.UserNewPasswordHandler == nil {
 		unregistered = append(unregistered, "user.NewPasswordHandler")
+	}
+	if o.NoteUpdateNoteHandler == nil {
+		unregistered = append(unregistered, "note.UpdateNoteHandler")
 	}
 	if o.UserVerifyUserHandler == nil {
 		unregistered = append(unregistered, "user.VerifyUserHandler")
@@ -307,11 +352,19 @@ func (o *Evoke365NetOpenAPISpecAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/note"] = note.NewAddNote(o.context, o.NoteAddNoteHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/user/signup"] = user.NewSignupUser(o.context, o.UserSignupUserHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/profile/authenticate"] = profile.NewAutheticateProfile(o.context, o.ProfileAutheticateProfileHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/note/{id}"] = note.NewDeleteNote(o.context, o.NoteDeleteNoteHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -320,6 +373,10 @@ func (o *Evoke365NetOpenAPISpecAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/user/forget"] = user.NewForgetPassword(o.context, o.UserForgetPasswordHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/notes/{userId}"] = note.NewGetNotes(o.context, o.NoteGetNotesHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -339,6 +396,10 @@ func (o *Evoke365NetOpenAPISpecAPI) initHandlerCache() {
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
+	o.handlers["PUT"]["/note/{id}"] = note.NewUpdateNote(o.context, o.NoteUpdateNoteHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
 	o.handlers["PUT"]["/user/verify"] = user.NewVerifyUser(o.context, o.UserVerifyUserHandler)
 }
 
@@ -349,6 +410,9 @@ func (o *Evoke365NetOpenAPISpecAPI) Serve(builder middleware.Builder) http.Handl
 
 	if o.Middleware != nil {
 		return o.Middleware(builder)
+	}
+	if o.useSwaggerUI {
+		return o.context.APIHandlerSwaggerUI(builder)
 	}
 	return o.context.APIHandler(builder)
 }

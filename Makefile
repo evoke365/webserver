@@ -13,3 +13,6 @@ gen:
 
 run:
 	go run ./cmd/evoke365-net-open-api-spec-server/main.go --tls-port=8080 --tls-key openssl/ca.key --tls-certificate openssl/ca.crt
+
+test:
+	go test ./...

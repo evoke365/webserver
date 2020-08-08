@@ -58,6 +58,202 @@ func init() {
         }
       }
     },
+    "/note": {
+      "post": {
+        "description": "user creates a new note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "user creates a new note",
+        "operationId": "AddNote",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "the data of the note",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddNoteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid request body supplied"
+          },
+          "401": {
+            "description": "Unauthorised user credentials"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/note/{id}": {
+      "put": {
+        "description": "update a note of a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "update a note",
+        "operationId": "updateNote",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the note to update",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updated a note",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateNoteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "400": {
+            "description": "Invalid request data supplied"
+          },
+          "401": {
+            "description": "Unauthorised user credentials"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete a note of a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "delete a note",
+        "operationId": "deleteNote",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the note to delete",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "400": {
+            "description": "Invalid request data supplied"
+          },
+          "401": {
+            "description": "Unauthorised user credentials"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/notes/{userId}": {
+      "get": {
+        "description": "Retrieve notes by User ID",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "Get Notes of a user",
+        "operationId": "getNotes",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "ID of User",
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "204": {
+            "description": "user not found"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/profile/authenticate": {
       "post": {
         "description": "used for authetication between internal systems",
@@ -344,6 +540,17 @@ func init() {
     }
   },
   "definitions": {
+    "AddNoteRequest": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
     "ApiResponse": {
       "type": "object",
       "properties": {
@@ -364,6 +571,14 @@ func init() {
       "properties": {
         "token": {
           "type": "string"
+        }
+      }
+    },
+    "UpdateNoteRequest": {
+      "type": "object",
+      "properties": {
+        "isImportant": {
+          "type": "boolean"
         }
       }
     },
@@ -427,38 +642,22 @@ func init() {
       }
     }
   },
-  "securityDefinitions": {
-    "api_auth": {
-      "type": "oauth2",
-      "flow": "implicit",
-      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
-      "scopes": {
-        "read:pets": "read your users",
-        "write:pets": "modify users in your account"
-      }
-    },
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
-      "in": "header"
-    }
-  },
   "tags": [
     {
       "description": "Healthcheck endpoint",
-      "name": "health",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://swagger.io"
-      }
+      "name": "health"
     },
     {
       "description": "Operations about user",
-      "name": "user",
-      "externalDocs": {
-        "description": "Find out more about user",
-        "url": "http://swagger.io"
-      }
+      "name": "user"
+    },
+    {
+      "description": "Operations about authentication",
+      "name": "profile"
+    },
+    {
+      "description": "Operations about note",
+      "name": "note"
     }
   ],
   "externalDocs": {
@@ -507,6 +706,202 @@ func init() {
         }
       }
     },
+    "/note": {
+      "post": {
+        "description": "user creates a new note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "user creates a new note",
+        "operationId": "AddNote",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "description": "the data of the note",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddNoteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid request body supplied"
+          },
+          "401": {
+            "description": "Unauthorised user credentials"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/note/{id}": {
+      "put": {
+        "description": "update a note of a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "update a note",
+        "operationId": "updateNote",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the note to update",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Updated a note",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateNoteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "400": {
+            "description": "Invalid request data supplied"
+          },
+          "401": {
+            "description": "Unauthorised user credentials"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete a note of a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "delete a note",
+        "operationId": "deleteNote",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the note to delete",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "400": {
+            "description": "Invalid request data supplied"
+          },
+          "401": {
+            "description": "Unauthorised user credentials"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/notes/{userId}": {
+      "get": {
+        "description": "Retrieve notes by User ID",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "note"
+        ],
+        "summary": "Get Notes of a user",
+        "operationId": "getNotes",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "authenticated token",
+            "name": "token",
+            "in": "header",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "ID of User",
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "204": {
+            "description": "user not found"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "500": {
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/profile/authenticate": {
       "post": {
         "description": "used for authetication between internal systems",
@@ -793,6 +1188,17 @@ func init() {
     }
   },
   "definitions": {
+    "AddNoteRequest": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
     "ApiResponse": {
       "type": "object",
       "properties": {
@@ -813,6 +1219,14 @@ func init() {
       "properties": {
         "token": {
           "type": "string"
+        }
+      }
+    },
+    "UpdateNoteRequest": {
+      "type": "object",
+      "properties": {
+        "isImportant": {
+          "type": "boolean"
         }
       }
     },
@@ -876,38 +1290,22 @@ func init() {
       }
     }
   },
-  "securityDefinitions": {
-    "api_auth": {
-      "type": "oauth2",
-      "flow": "implicit",
-      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
-      "scopes": {
-        "read:pets": "read your users",
-        "write:pets": "modify users in your account"
-      }
-    },
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
-      "in": "header"
-    }
-  },
   "tags": [
     {
       "description": "Healthcheck endpoint",
-      "name": "health",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://swagger.io"
-      }
+      "name": "health"
     },
     {
       "description": "Operations about user",
-      "name": "user",
-      "externalDocs": {
-        "description": "Find out more about user",
-        "url": "http://swagger.io"
-      }
+      "name": "user"
+    },
+    {
+      "description": "Operations about authentication",
+      "name": "profile"
+    },
+    {
+      "description": "Operations about note",
+      "name": "note"
     }
   ],
   "externalDocs": {
