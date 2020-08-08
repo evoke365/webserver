@@ -1,3 +1,3 @@
-# auth
-(In Progress)
-Reusable authentication service that implements common SaaS authentication flows backed by MongoDB.
+# Evoke 365 Web Server
+
+Current Status: In Progress
