@@ -17,7 +17,7 @@ import (
 	"github.com/jacygao/auth/restapi/operations"
 	"github.com/jacygao/auth/restapi/operations/health"
 	"github.com/jacygao/auth/restapi/operations/user"
-	"github.com/jacygao/auth/store"
+	"github.com/jacygao/auth/store/mongodb"
 )
 
 //go:generate swagger generate server --target ../../auth --name Evoke365NetOpenAPISpec --spec ../openapi/spec.yaml
@@ -105,17 +105,16 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	return handler
 }
 
-func setupMongoStore() (*store.MongoDB, error) {
-	mongoConfig := store.MongoConfig{
-		URI:            os.Getenv("MONGO_URI"),
-		DBName:         os.Getenv("DB_NAME"),
-		CollectionName: os.Getenv("COLLECTION_NAME"),
+func setupMongoStore() (*mongodb.MongoDB, error) {
+	mongoConfig := mongodb.MongoConfig{
+		URI:    os.Getenv("MONGO_URI"),
+		DBName: os.Getenv("DB_NAME"),
 	}
 	if err := mongoConfig.Validate(); err != nil {
 		return nil, err
 	}
 
-	return store.NewMongoDB(mongoConfig)
+	return mongodb.NewMongoDB(mongoConfig)
 }
 
 func setupMailer() *mailer.Client {

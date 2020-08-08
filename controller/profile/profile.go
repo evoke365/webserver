@@ -8,6 +8,7 @@ import (
 	"github.com/jacygao/auth/controller/internal/responder"
 	"github.com/jacygao/auth/restapi/operations/profile"
 	"github.com/jacygao/auth/store"
+	"github.com/jacygao/auth/store/data"
 )
 
 // Controller defines HTTP handlers.
@@ -28,7 +29,7 @@ func (c *Controller) Authenticate(req *profile.AutheticateProfileParams) middlew
 		return responder.DefaultBadRequest()
 	}
 
-	user := &store.User{}
+	user := &data.User{}
 	if err := c.store.FindUserByTok(req.Body.Token, user); err != nil {
 		log.Println(err.Error())
 		return responder.DefaultServerError()
@@ -54,7 +55,7 @@ func (c *Controller) Get(req *profile.GetProfileParams) middleware.Responder {
 		return responder.DefaultBadRequest()
 	}
 
-	user := &store.User{}
+	user := &data.User{}
 	if err := c.store.GetUser(req.ID, user); err != nil {
 		if !c.store.IsErrNotFound(err) {
 			log.Println(err.Error())

@@ -11,6 +11,7 @@ import (
 	"github.com/jacygao/auth/pkg/mailer"
 	"github.com/jacygao/auth/restapi/operations/user"
 	"github.com/jacygao/auth/store"
+	"github.com/jacygao/auth/store/data"
 )
 
 // Config defines madetory configuration values to initialise a controller instance.
@@ -45,7 +46,7 @@ func NewController(s store.DB, m *mailer.Client, c Config) *Controller {
 func (c *Controller) Signup(req *user.SignupUserParams) middleware.Responder {
 	code := randCode(6)
 
-	user := &store.User{
+	user := &data.User{
 		Email:                strings.ToLower(req.Body.Email),
 		Password:             hashMD5(req.Body.Password),
 		Timezone:             req.Body.Timezone,
@@ -77,7 +78,7 @@ func (c *Controller) FindUser(req *user.FindUserParams) middleware.Responder {
 	if len(req.ID) == 0 {
 		return responder.DefaultBadRequest()
 	}
-	user := &store.User{}
+	user := &data.User{}
 	if err := c.store.GetUser(strings.ToLower(req.ID), user); err != nil {
 		if !c.store.IsErrNotFound(err) {
 			log.Println(err.Error())
@@ -111,7 +112,7 @@ func (c *Controller) ForgetPassword(req *user.ForgetPasswordParams) middleware.R
 
 // LoginUser implements the HTTP handler logic for /login
 func (c *Controller) LoginUser(req *user.LoginUserParams) middleware.Responder {
-	user := &store.User{}
+	user := &data.User{}
 	if err := c.store.GetUser(req.Body.Email, user); err != nil {
 		log.Println(err.Error())
 		return responder.DefaultServerError()
@@ -161,7 +162,7 @@ func (c *Controller) NewPassword(req *user.NewPasswordParams) middleware.Respond
 
 // VerifyUser implements the HTTP handler logic for /verify
 func (c *Controller) VerifyUser(req *user.VerifyUserParams) middleware.Responder {
-	user := &store.User{}
+	user := &data.User{}
 	if err := c.store.VerifyUser(req.Body.Email, req.Body.Code, user); err != nil {
 		log.Println(err.Error())
 		return responder.DefaultServerError()
