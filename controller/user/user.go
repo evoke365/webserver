@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/evoke365/webserver/controller/internal/responder"
+	"github.com/evoke365/webserver/pkg/mailer"
+	"github.com/evoke365/webserver/restapi/operations/user"
+	"github.com/evoke365/webserver/store"
+	"github.com/evoke365/webserver/store/data"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/jacygao/auth/controller/internal/responder"
-	"github.com/jacygao/auth/pkg/mailer"
-	"github.com/jacygao/auth/restapi/operations/user"
-	"github.com/jacygao/auth/store"
-	"github.com/jacygao/auth/store/data"
 )
 
 // Config defines madetory configuration values to initialise a controller instance.

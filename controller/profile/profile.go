@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/evoke365/webserver/controller/internal/responder"
+	"github.com/evoke365/webserver/restapi/operations/profile"
+	"github.com/evoke365/webserver/store"
+	"github.com/evoke365/webserver/store/data"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/jacygao/auth/controller/internal/responder"
-	"github.com/jacygao/auth/restapi/operations/profile"
-	"github.com/jacygao/auth/store"
-	"github.com/jacygao/auth/store/data"
 )
 
 // Controller defines HTTP handlers.

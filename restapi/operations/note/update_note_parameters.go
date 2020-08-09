@@ -15,7 +15,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 
-	"github.com/jacygao/auth/models"
+	"github.com/evoke365/webserver/models"
 )
 
 // NewUpdateNoteParams creates a new UpdateNoteParams object

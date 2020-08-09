@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/jacygao/auth/models"
+	"github.com/evoke365/webserver/models"
 )
 
 // NewNewPasswordParams creates a new NewPasswordParams object

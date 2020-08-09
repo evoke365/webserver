@@ -19,10 +19,10 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/jacygao/auth/restapi/operations/health"
-	"github.com/jacygao/auth/restapi/operations/note"
-	"github.com/jacygao/auth/restapi/operations/profile"
-	"github.com/jacygao/auth/restapi/operations/user"
+	"github.com/evoke365/webserver/restapi/operations/health"
+	"github.com/evoke365/webserver/restapi/operations/note"
+	"github.com/evoke365/webserver/restapi/operations/profile"
+	"github.com/evoke365/webserver/restapi/operations/user"
 )
 
 // NewEvoke365NetOpenAPISpecAPI creates a new Evoke365NetOpenAPISpec instance

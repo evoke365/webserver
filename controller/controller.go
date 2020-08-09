@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"github.com/jacygao/auth/controller/health"
-	"github.com/jacygao/auth/controller/profile"
-	"github.com/jacygao/auth/controller/user"
-	"github.com/jacygao/auth/pkg/mailer"
-	"github.com/jacygao/auth/store"
+	"github.com/evoke365/webserver/controller/health"
+	"github.com/evoke365/webserver/controller/profile"
+	"github.com/evoke365/webserver/controller/user"
+	"github.com/evoke365/webserver/pkg/mailer"
+	"github.com/evoke365/webserver/store"
 )
 
 type Controller struct {

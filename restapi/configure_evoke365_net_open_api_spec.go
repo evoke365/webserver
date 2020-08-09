@@ -12,12 +12,12 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/jacygao/auth/controller"
-	"github.com/jacygao/auth/pkg/mailer"
-	"github.com/jacygao/auth/restapi/operations"
-	"github.com/jacygao/auth/restapi/operations/health"
-	"github.com/jacygao/auth/restapi/operations/user"
-	"github.com/jacygao/auth/store/mongodb"
+	"github.com/evoke365/webserver/controller"
+	"github.com/evoke365/webserver/pkg/mailer"
+	"github.com/evoke365/webserver/restapi/operations"
+	"github.com/evoke365/webserver/restapi/operations/health"
+	"github.com/evoke365/webserver/restapi/operations/user"
+	"github.com/evoke365/webserver/store/mongodb"
 )
 
 //go:generate swagger generate server --target ../../auth --name Evoke365NetOpenAPISpec --spec ../openapi/spec.yaml

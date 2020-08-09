@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/evoke365/webserver/restapi"
+	"github.com/evoke365/webserver/restapi/operations"
 	"github.com/go-openapi/loads"
-	"github.com/jacygao/auth/restapi"
-	"github.com/jacygao/auth/restapi/operations"
 	flags "github.com/jessevdk/go-flags"
 )
 
