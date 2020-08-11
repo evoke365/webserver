@@ -16,6 +16,7 @@ import (
 	"github.com/evoke365/webserver/pkg/mailer"
 	"github.com/evoke365/webserver/restapi/operations"
 	"github.com/evoke365/webserver/restapi/operations/health"
+	"github.com/evoke365/webserver/restapi/operations/note"
 	"github.com/evoke365/webserver/restapi/operations/user"
 	"github.com/evoke365/webserver/store/mongodb"
 )
@@ -74,6 +75,21 @@ func configureAPI(api *operations.Evoke365NetOpenAPISpecAPI) http.Handler {
 		return controller.User.VerifyUser(&params)
 	})
 
+	api.NoteAddNoteHandler = note.AddNoteHandlerFunc(func(params note.AddNoteParams) middleware.Responder {
+		return controller.Note.AddNote(&params)
+	})
+
+	api.NoteGetNotesHandler = note.GetNotesHandlerFunc(func(params note.GetNotesParams) middleware.Responder {
+		return controller.Note.GetNotes(&params)
+	})
+
+	api.NoteUpdateNoteHandler = note.UpdateNoteHandlerFunc(func(params note.UpdateNoteParams) middleware.Responder {
+		return controller.Note.UpdateNote(&params)
+	})
+
+	api.NoteDeleteNoteHandler = note.DeleteNoteHandlerFunc(func(params note.DeleteNoteParams) middleware.Responder {
+		return controller.Note.DeleteNote(&params)
+	})
 	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}
