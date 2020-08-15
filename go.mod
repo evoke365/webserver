@@ -3,6 +3,7 @@ module github.com/evoke365/webserver
 go 1.12
 
 require (
+	github.com/aws/aws-sdk-go v1.34.5
 	github.com/go-openapi/errors v0.19.6
 	github.com/go-openapi/loads v0.19.5
 	github.com/go-openapi/runtime v0.19.20
