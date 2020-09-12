@@ -7,8 +7,9 @@ import (
 )
 
 const (
-	UserCollectionLabel = "user"
-	NoteCollectionLabel = "note"
+	UserCollectionLabel  = "user"
+	NoteCollectionLabel  = "note"
+	EventCollectionLabel = "event"
 )
 
 // User defines the user data structure for database operations.
@@ -36,3 +37,14 @@ type Note struct {
 	Modified  time.Time          `bson:"modified,omitempty"`
 	Deleted   bool               `bson:"deleted"`
 }
+
+type Event struct {
+	ID          primitive.ObjectID
+	AggregateID string
+	Topic       EventType
+	Data        []byte
+	Timestamp   time.Time
+	Version     int
+}
+
+type EventType string

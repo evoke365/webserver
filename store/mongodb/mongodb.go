@@ -35,7 +35,7 @@ func (mc MongoConfig) Validate() error {
 
 // MongoDB defines the structure of the instance.
 type MongoDB struct {
-	user, note *mongo.Collection
+	user, note, event *mongo.Collection
 }
 
 // NewMongoDB returns a new instande of MongoDB implementation of the DB interface.
@@ -46,8 +46,9 @@ func NewMongoDB(c MongoConfig) (*MongoDB, error) {
 	}
 	db := client.Database(c.DBName)
 	return &MongoDB{
-		user: db.Collection(data.UserCollectionLabel),
-		note: db.Collection(data.NoteCollectionLabel),
+		user:  db.Collection(data.UserCollectionLabel),
+		note:  db.Collection(data.NoteCollectionLabel),
+		event: db.Collection(data.EventCollectionLabel),
 	}, nil
 }
 

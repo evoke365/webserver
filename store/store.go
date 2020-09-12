@@ -27,4 +27,6 @@ type DB interface {
 	DeleteNote(ctx context.Context, userID, noteID string) error
 	UpdateNote(ctx context.Context, userID, noteID string, newData map[string]interface{}) (*data.Note, error)
 	GetUpdatedNotes(ctx context.Context, fromDate time.Time, toDate time.Time) ([]*data.Note, error)
+
+	InsertEvent(ctx context.Context, event *data.Event) error
 }
