@@ -4,17 +4,20 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/evoke365/webserver/event/bus"
 	"github.com/evoke365/webserver/store"
 	"github.com/evoke365/webserver/store/data"
 )
 
 type Controller struct {
-	store store.DB
+	store     store.DB
+	publisher bus.Publisher
 }
 
-func NewController(db store.DB) *Controller {
+func NewController(db store.DB, pub bus.Publisher) *Controller {
 	return &Controller{
-		store: db,
+		store:     db,
+		publisher: pub,
 	}
 }
 
@@ -25,14 +28,13 @@ func (c *Controller) Save(ctx context.Context, aggregateID string, t data.EventT
 		return err
 	}
 
-	return c.store.InsertEvent(ctx, &data.Event{
+	if err := c.store.InsertEvent(ctx, &data.Event{
 		AggregateID: aggregateID,
 		Topic:       t,
 		Data:        blob,
-	})
-}
+	}); err != nil {
+		return err
+	}
 
-// Publish publishes an event to SNS.
-func (c *Controller) Publish(ctx context.Context) {
-
+	return c.publisher.Publish(t, blob)
 }
