@@ -8,4 +8,4 @@ func (n *NoopPublisher) Publish(topic data.EventType, message []byte) error { re
 
 type NoopSubscriber struct{}
 
-func (n *NoopSubscriber) Subscribe(topic data.EventType) []byte { return nil, nil }
+func (n *NoopSubscriber) Subscribe(topic data.EventType) ([]byte, error) { return nil, nil }
