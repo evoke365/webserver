@@ -22,16 +22,17 @@ func NewController(db store.DB, pub bus.Publisher) *Controller {
 }
 
 // Save stores an event to the event store.
-func (c *Controller) Save(ctx context.Context, aggregateID string, t data.EventType, payload interface{}) error {
+func (c *Controller) Save(ctx context.Context, aggregateID string, at data.AggregateType, et data.EventType, payload interface{}) error {
 	blob, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
 
 	if err := c.store.InsertEvent(ctx, &data.Event{
-		AggregateID: aggregateID,
-		Topic:       t,
-		Data:        blob,
+		AggregateID:   aggregateID,
+		AggregateType: at,
+		Type:          et,
+		Data:          blob,
 	}); err != nil {
 		return err
 	}

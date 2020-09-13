@@ -39,12 +39,15 @@ type Note struct {
 }
 
 type Event struct {
-	ID          primitive.ObjectID
-	AggregateID string
-	Topic       EventType
-	Data        []byte
-	Timestamp   time.Time
-	Version     int
+	ID            primitive.ObjectID
+	AggregateID   string
+	AggregateType AggregateType
+	Type          EventType
+	Data          []byte
+	Timestamp     time.Time
+	Version       int
 }
 
 type EventType string
+
+type AggregateType string
