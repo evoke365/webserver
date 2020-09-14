@@ -37,5 +37,5 @@ func (c *Controller) Save(ctx context.Context, aggregateID string, at data.Aggre
 		return err
 	}
 
-	return c.publisher.Publish(et, blob)
+	return c.publisher.Publish(string(et), blob)
 }
