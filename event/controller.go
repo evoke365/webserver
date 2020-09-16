@@ -11,7 +11,7 @@ import (
 
 type Controller struct {
 	store     store.DB
-	publisher bus.Publisher
+	publisher bus.PubSub
 }
 
 func NewController(db store.DB, pub bus.Publisher) *Controller {

@@ -1,9 +1,6 @@
 package bus
 
-type Publisher interface {
+type PubSub interface {
 	Publish(topic string, message []byte) error
-}
-
-type Subscriber interface {
-	Subscribe(topic string) ([]byte, error)
+	Subscribe(topic string, command func([]byte))
 }
