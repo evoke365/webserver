@@ -1,9 +1,13 @@
 package bus
 
 import (
+	"context"
 	"time"
+
+	"github.com/evoke365/webserver/event"
 )
 
+// Config defines configuration fields for running the event bus.
 type Config struct {
 	Topics                  []string
 	QueueRetryDelayMilliSec int
@@ -14,12 +18,14 @@ type Event struct {
 	Message []byte
 }
 
+// ChannelBus is an implementation of the Bus interface backed by go channels.
 type ChannelBus struct {
 	conf   Config
 	bus    chan Event
 	queues map[string](chan []byte)
 }
 
+// NewChannelBus returns an instance of the ChannelBus struct.
 func NewChannelBus(c Config) *ChannelBus {
 	qs := make(map[string](chan []byte))
 	for _, topic := range c.Topics {
@@ -48,7 +54,7 @@ func (c *ChannelBus) start() {
 	}
 }
 
-func (c *ChannelBus) Publish(topic string, message []byte) error {
+func (c *ChannelBus) Publish(ctx context.Context, topic string, message []byte) error {
 	c.bus <- Event{
 		Topic:   string(topic),
 		Message: message,
@@ -56,11 +62,11 @@ func (c *ChannelBus) Publish(topic string, message []byte) error {
 	return nil
 }
 
-func (c *ChannelBus) Subscribe(topic string, command func([]byte)) {
+func (c *ChannelBus) Subscribe(ctx context.Context, topic string, command event.Command) {
 	for {
 		event := <-c.queues[topic]
 		if event != nil {
-			command(event)
+			command(ctx, event)
 		}
 		time.Sleep(time.Duration(c.conf.QueueRetryDelayMilliSec) * time.Millisecond)
 	}

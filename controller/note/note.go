@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/evoke365/webserver/controller/internal/responder"
+	"github.com/evoke365/webserver/event"
 	"github.com/evoke365/webserver/store"
 	"github.com/evoke365/webserver/store/data"
 	"github.com/go-openapi/runtime/middleware"
@@ -17,12 +18,14 @@ import (
 // Controller defines HTTP handlers.
 type Controller struct {
 	store store.DB
+	event *event.Controller
 }
 
 // NewController returns a new instance of Controller.
-func NewController(db store.DB) *Controller {
+func NewController(db store.DB, ec *event.Controller) *Controller {
 	return &Controller{
 		store: db,
+		event: ec,
 	}
 }
 
@@ -51,6 +54,7 @@ func (c *Controller) GetNotes(req *note.GetNotesParams) middleware.Responder {
 	return responder.DefaultOK().WithResponse(b)
 }
 
+// AddNote creates a new note object and emits a NodeAdded event.
 func (c *Controller) AddNote(req *note.AddNoteParams) middleware.Responder {
 	ctx := req.HTTPRequest.Context()
 	u := &data.User{}
@@ -71,10 +75,17 @@ func (c *Controller) AddNote(req *note.AddNoteParams) middleware.Responder {
 		Modified:  time.Now(),
 		Deleted:   false,
 	}
-	if err := c.store.InsertNote(ctx, postNote); err != nil {
+
+	if err := c.event.Save(ctx, u.Email, event.Note, event.NoteAdded, postNote); err != nil {
 		log.Println(err.Error())
 		return &responder.ServerError{}
 	}
+
+	// TODO: moving this logic to event consumer
+	// if err := c.store.InsertNote(ctx, postNote); err != nil {
+	// 	log.Println(err.Error())
+	// 	return &responder.ServerError{}
+	// }
 
 	b, err := json.Marshal(postNote)
 	if err != nil {

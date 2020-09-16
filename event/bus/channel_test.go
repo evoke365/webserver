@@ -2,6 +2,7 @@ package bus
 
 import (
 	"bytes"
+	"context"
 	"testing"
 )
 
@@ -12,7 +13,7 @@ func TestPublish(t *testing.T) {
 	}
 	bus := NewChannelBus(mockConf)
 	mockMsg := []byte("123")
-	if err := bus.Publish("mock1", mockMsg); err != nil {
+	if err := bus.Publish(context.Background(), "mock1", mockMsg); err != nil {
 		t.Fatal(err)
 	}
 

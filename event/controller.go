@@ -3,21 +3,28 @@ package event
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
-	"github.com/evoke365/webserver/event/bus"
 	"github.com/evoke365/webserver/store"
 	"github.com/evoke365/webserver/store/data"
 )
 
-type Controller struct {
-	store     store.DB
-	publisher bus.PubSub
+type Bus interface {
+	Publish(ctx context.Context, topic string, message []byte) error
+	Subscribe(ctx context.Context, topic string, command Command)
 }
 
-func NewController(db store.DB, pub bus.Publisher) *Controller {
+type Command func(ctx context.Context, data []byte)
+
+type Controller struct {
+	store store.DB
+	bus   Bus
+}
+
+func NewController(db store.DB, b Bus) *Controller {
 	return &Controller{
-		store:     db,
-		publisher: pub,
+		store: db,
+		bus:   b,
 	}
 }
 
@@ -37,5 +44,16 @@ func (c *Controller) Save(ctx context.Context, aggregateID string, at data.Aggre
 		return err
 	}
 
-	return c.publisher.Publish(string(et), blob)
+	return c.bus.Publish(ctx, string(et), blob)
+}
+
+func (c *Controller) StartSubscribers(ctx context.Context, commands map[string]Command) error {
+	if len(commands) == 0 {
+		return fmt.Errorf("no topics found to subscribe")
+	}
+
+	for topic, command := range commands {
+		go c.bus.Subscribe(ctx, topic, command)
+	}
+	return nil
 }
