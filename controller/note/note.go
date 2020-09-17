@@ -81,12 +81,6 @@ func (c *Controller) AddNote(req *note.AddNoteParams) middleware.Responder {
 		return &responder.ServerError{}
 	}
 
-	// TODO: moving this logic to event consumer
-	// if err := c.store.InsertNote(ctx, postNote); err != nil {
-	// 	log.Println(err.Error())
-	// 	return &responder.ServerError{}
-	// }
-
 	b, err := json.Marshal(postNote)
 	if err != nil {
 		log.Println(err.Error())

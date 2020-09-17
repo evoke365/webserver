@@ -11,10 +11,17 @@ import (
 
 type Bus interface {
 	Publish(ctx context.Context, topic string, message []byte) error
-	Subscribe(ctx context.Context, topic string, command Command)
+	Subscribe(ctx context.Context, topic string, command Commander)
 }
 
-type Command func(ctx context.Context, data []byte)
+type Commander interface {
+	Execute(ctx context.Context, data Message)
+}
+
+type Message struct {
+	Topic string
+	Data  []byte
+}
 
 type Controller struct {
 	store store.DB
@@ -47,7 +54,7 @@ func (c *Controller) Save(ctx context.Context, aggregateID string, at data.Aggre
 	return c.bus.Publish(ctx, string(et), blob)
 }
 
-func (c *Controller) StartSubscribers(ctx context.Context, commands map[string]Command) error {
+func (c *Controller) StartSubscribers(ctx context.Context, commands map[string]Commander) error {
 	if len(commands) == 0 {
 		return fmt.Errorf("no topics found to subscribe")
 	}
