@@ -1,13 +1,13 @@
 [![Build Status](https://travis-ci.org/evoke365/webserver.svg?branch=master)](https://travis-ci.org/evoke365/webserver)
 [![codecov](https://codecov.io/gh/evoke365/webserver/branch/master/graph/badge.svg)](https://codecov.io/gh/evoke365/webserver)
 
-# Evoke 365 Web Server
+# Evoke 365 Web Server 2.0
 
 Current Status: In Progress
 
 ## Overview
 
-The codebase of the backend system for evoke365.net.
+The codebase of the next gen backend system for evoke365.net.
 
 The API Interface layer is generated with [go-swagger](https://github.com/go-swagger/go-swagger).
 
