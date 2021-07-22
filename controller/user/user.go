@@ -60,6 +60,16 @@ func (c *Controller) Signup(req *user.SignupUserParams) middleware.Responder {
 		return responder.DefaultServerError()
 	}
 
+	// if err := h.callback.OnSignup(user); err != nil {
+	// 	respond500(w, err)
+	// 	return
+	// }
+
+	// if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+	// 	respond500(w, err)
+	// 	return
+	// }
+
 	return responder.DefaultOK()
 }
 
@@ -93,6 +103,10 @@ func (c *Controller) ForgetPassword(req *user.ForgetPasswordParams) middleware.R
 		return responder.DefaultServerError()
 	}
 
+	// if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+	// 	respond500(w, err)
+	// 	return
+	// }
 	return responder.DefaultOK()
 }
 
@@ -114,6 +128,11 @@ func (c *Controller) LoginUser(req *user.LoginUserParams) middleware.Responder {
 			log.Println(err.Error())
 			return responder.DefaultServerError()
 		}
+
+		// if err := h.callback.OnVerify(user.Email, user.ActivationCode); err != nil {
+		// 	log.Println(err.Error())
+		// 	return responder.DefaultServerError()
+		// }
 
 		return responder.DefaultOK()
 	}
