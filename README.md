@@ -11,3 +11,4 @@ The API Interface layer is generated with [go-swagger](https://github.com/go-swa
 The Controller layer is implemented with [Event Sourcing](https://www.martinfowler.com/eaaDev/EventSourcing.html) and [Pub-sub design pattern](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern).
 
 The DataStore implementation is backed by [MongoDB](https://www.mongodb.com/).
+
