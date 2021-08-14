@@ -22,4 +22,12 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: go test -v ./...
+      run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+    - name: Codecov
+      # You may pin to the exact commit or the version.
+      # uses: codecov/codecov-action@51d810878be5422784e86451c0e7c14e5860ec47
+      uses: codecov/codecov-action@v2.0.2
+      with:
+        # Repository upload token - get it from codecov.io. Required only for private repositories
+        token: d0f66233-2df4-4a3e-ad98-12854a6a0c7b
