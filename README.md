@@ -1,5 +1,7 @@
 # Evoke 365 Web Server 2.0
 
+[![codecov](https://codecov.io/gh/evoke365/webserver/branch/master/graph/badge.svg?token=P63AVPT88Z)](https://codecov.io/gh/evoke365/webserver)
+
 Current Status: In Progress
 
 ## Overview
