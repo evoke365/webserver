@@ -23,3 +23,7 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+    - name: Test coverage
+      run: covr::codecov()
+      shell: Rscript {0}
