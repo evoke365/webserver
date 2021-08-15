@@ -10,10 +10,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// UserSignupRequets user signup requets
+// UserSignupRequests user signup requests
 //
-// swagger:model UserSignupRequets
-type UserSignupRequets struct {
+// swagger:model UserSignupRequests
+type UserSignupRequests struct {
 
 	// email
 	Email string `json:"email,omitempty"`
@@ -25,13 +25,13 @@ type UserSignupRequets struct {
 	Timezone int32 `json:"timezone,omitempty"`
 }
 
-// Validate validates this user signup requets
-func (m *UserSignupRequets) Validate(formats strfmt.Registry) error {
+// Validate validates this user signup requests
+func (m *UserSignupRequests) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *UserSignupRequets) MarshalBinary() ([]byte, error) {
+func (m *UserSignupRequests) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -39,8 +39,8 @@ func (m *UserSignupRequets) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UserSignupRequets) UnmarshalBinary(b []byte) error {
-	var res UserSignupRequets
+func (m *UserSignupRequests) UnmarshalBinary(b []byte) error {
+	var res UserSignupRequests
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

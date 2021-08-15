@@ -486,7 +486,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserSignupRequets"
+              "$ref": "#/definitions/UserSignupRequests"
             }
           }
         ],
@@ -615,7 +615,7 @@ func init() {
         }
       }
     },
-    "UserSignupRequets": {
+    "UserSignupRequests": {
       "type": "object",
       "properties": {
         "email": {
@@ -1134,7 +1134,7 @@ func init() {
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserSignupRequets"
+              "$ref": "#/definitions/UserSignupRequests"
             }
           }
         ],
@@ -1263,7 +1263,7 @@ func init() {
         }
       }
     },
-    "UserSignupRequets": {
+    "UserSignupRequests": {
       "type": "object",
       "properties": {
         "email": {

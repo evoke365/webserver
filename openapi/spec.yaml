@@ -149,7 +149,7 @@ paths:
         description: "Sign up a new user"
         required: true
         schema:
-          $ref: "#/definitions/UserSignupRequets"
+          $ref: "#/definitions/UserSignupRequests"
       responses:
         "200":
           description: "successful operation"
@@ -383,7 +383,7 @@ definitions:
         type: "string"
       password:
         type: "string"
-  UserSignupRequets:
+  UserSignupRequests:
     type: "object"
     properties:
       email:
