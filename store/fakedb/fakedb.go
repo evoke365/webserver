@@ -32,3 +32,26 @@ func (db *FakeDB) InsertUser(user *data.User) (string, error) {
 	db.userDB[id] = b
 	return id, nil
 }
+
+func (db *FakeDB) UpSertUser(id string, user *data.User) error {
+	b, err := json.Marshal(user)
+	if err != nil {
+		return err
+	}
+	db.userDB[id] = b
+	return nil
+}
+
+func (db *FakeDB) ActivateUser(id string) error {
+	user := &data.User{}
+	if err := db.GetUser(id, user); err != nil {
+		return err
+	}
+
+	user.IsActive = true
+	if err := db.UpSertUser(id, user); err != nil {
+		return err
+	}
+
+	return nil
+}

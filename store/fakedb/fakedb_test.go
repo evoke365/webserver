@@ -1,6 +1,7 @@
 package fakedb
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -26,5 +27,31 @@ func TestInsertGetUser(t *testing.T) {
 
 	if !reflect.DeepEqual(mockUser, mockUser2) {
 		t.Fatalf("results do not match! expected %+v but got %+v", mockUser, mockUser2)
+	}
+}
+
+func TestActivateUser(t *testing.T) {
+	ins := NewFakeDB()
+	mockUser := &data.User{
+		Email:    "test@test.com",
+		Password: "tobeencrypted",
+	}
+	id, err := ins.InsertUser(mockUser)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := ins.ActivateUser(id); err != nil {
+		t.Fatal(err)
+	}
+
+	mockUser2 := &data.User{}
+	if err := ins.GetUser(id, mockUser2); err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("%+v", mockUser2)
+	if !mockUser2.IsActive {
+		t.Fatal("expected user to be activated")
 	}
 }
