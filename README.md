@@ -1,5 +1,6 @@
 # Evoke 365 Web Server 2.0
 
+![CI](https://github.com/evoke365/webserver/actions/workflows/go.yml/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/evoke365/webserver/branch/master/graph/badge.svg?token=P63AVPT88Z)](https://codecov.io/gh/evoke365/webserver)
 
 Current Status: In Progress
