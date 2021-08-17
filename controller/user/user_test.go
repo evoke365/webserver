@@ -26,3 +26,7 @@ func TestSignupSuccess(t *testing.T) {
 		t.Fatalf("expected %+v but got %+v", exp, res)
 	}
 }
+
+func TestFindUser(t *testing.T) {
+
+}
