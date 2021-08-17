@@ -1,7 +1,6 @@
 package fakedb
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -50,7 +49,6 @@ func TestActivateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	fmt.Printf("%+v", mockUser2)
 	if !mockUser2.IsActive {
 		t.Fatal("expected user to be activated")
 	}
