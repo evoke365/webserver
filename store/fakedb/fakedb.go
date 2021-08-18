@@ -10,6 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+const (
+	defaultTokenExpirySec = 5
+)
+
 var ErrNoDocument = errors.New("no document")
 
 type FakeDB struct {

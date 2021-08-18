@@ -3,6 +3,7 @@ package fakedb
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/evoke365/webserver/store/data"
 )
@@ -83,5 +84,45 @@ func TestFindUserByTok(t *testing.T) {
 
 	if !reflect.DeepEqual(mockUser, mockUser2) {
 		t.Fatalf("results do not match! expected %+v but got %+v", mockUser, mockUser2)
+	}
+}
+
+func TestFindUserByTokNotFound(t *testing.T) {
+	ins := NewFakeDB()
+	mockUser2 := &data.User{}
+	err := ins.FindUserByTok("tok", mockUser2)
+	if !ins.IsErrNotFound(err) {
+		t.Fatalf("expected err %v but got %v", ErrNoDocument, err)
+	}
+}
+
+func TestUpdateActiveCode(t *testing.T) {
+	ins := NewFakeDB()
+	now := time.Now()
+	mockUser := &data.User{
+		Email:                "test@test.com",
+		Password:             "tobeencrypted",
+		Token:                "tok",
+		ActivationCode:       "code1",
+		ActivationCodeExpiry: now,
+	}
+
+	id, err := ins.InsertUser(mockUser)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	now2 := time.Now().Add(time.Second * 60)
+	user, err := ins.UpdateActiveCode(id, "code2", now2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if user.ActivationCode != "code2" {
+		t.Fatalf("expected code2 but got %s", user.ActivationCode)
+	}
+
+	if !reflect.DeepEqual(user.ActivationCodeExpiry, now2) {
+		t.Fatal("exp mismatch")
 	}
 }
