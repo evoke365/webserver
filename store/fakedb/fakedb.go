@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
+	"fmt"
 
 	"github.com/evoke365/webserver/store"
 	"github.com/evoke365/webserver/store/data"
@@ -91,6 +92,42 @@ func (db *FakeDB) FindUserByTok(tok string, user *data.User) error {
 	return ErrNoDocument
 }
 
+func (db *FakeDB) TouchTok(id string) error {
+	user := &data.User{}
+	if err := db.GetUser(id, user); err != nil {
+		return err
+	}
+	user.TokenExpiry = time.Now().Add(time.Second * defaultTokenExpirySec)
+
+	if err := db.UpSertUser(id, user); err != nil {
+		return err
+	}
+	return nil
+} 
+
+func(db *FakeDB) UpdatePassword(id, tok, pwd string) error {
+	user := &data.User{}
+	if err := db.GetUser(id, user); err != nil {
+		return err
+	}
+
+	if user.Token != tok {
+		return ErrNoDocument
+	}
+
+	user.Password = pwd
+	return nil
+}
+
 func (m *FakeDB) IsErrNotFound(err error) bool {
 	return err == ErrNoDocument
+}
+
+func (m *FakeDB) isTokenValid(id string) bool {
+	user := &data.User{}
+	if err := m.GetUser(id, user); err != nil {
+		return false
+	}
+	fmt.Printf("%+v", user)
+	return user.TokenExpiry.After(time.Now())
 }

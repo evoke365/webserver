@@ -126,3 +126,27 @@ func TestUpdateActiveCode(t *testing.T) {
 		t.Fatal("exp mismatch")
 	}
 }
+
+func TestTouchTok(t *testing.T) {
+	ins := NewFakeDB()
+	now := time.Now().Add(time.Minute * -1)
+	mockUser := &data.User{
+		Email:                "test@test.com",
+		Password:             "tobeencrypted",
+		Token:                "tok",
+		TokenExpiry: now,
+	}
+
+	id, err := ins.InsertUser(mockUser)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := ins.TouchTok(id); err != nil {
+		t.Fatal(err)
+	}
+
+	if !ins.isTokenValid(id) {
+		t.Fatalf("expected valid token")
+	}
+}
