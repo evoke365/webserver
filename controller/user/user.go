@@ -79,7 +79,7 @@ func (c *Controller) FindUser(req *user.FindUserParams) middleware.Responder {
 		return responder.DefaultBadRequest()
 	}
 	user := &data.User{}
-	if err := c.store.GetUser(strings.ToLower(req.ID), user); err != nil {
+	if err := c.store.GetUser(req.ID, user); err != nil {
 		if !c.store.IsErrNotFound(err) {
 			log.Println(err.Error())
 			return responder.DefaultServerError()
