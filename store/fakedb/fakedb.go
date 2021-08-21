@@ -3,8 +3,8 @@ package fakedb
 import (
 	"encoding/json"
 	"errors"
-	"time"
 	"fmt"
+	"time"
 
 	"github.com/evoke365/webserver/store"
 	"github.com/evoke365/webserver/store/data"
@@ -103,9 +103,9 @@ func (db *FakeDB) TouchTok(id string) error {
 		return err
 	}
 	return nil
-} 
+}
 
-func(db *FakeDB) UpdatePassword(id, tok, pwd string) error {
+func (db *FakeDB) UpdatePassword(id, tok, pwd string) error {
 	user := &data.User{}
 	if err := db.GetUser(id, user); err != nil {
 		return err
@@ -116,6 +116,10 @@ func(db *FakeDB) UpdatePassword(id, tok, pwd string) error {
 	}
 
 	user.Password = pwd
+	if err := db.UpSertUser(id, user); err != nil {
+		return err
+	}
+
 	return nil
 }
 

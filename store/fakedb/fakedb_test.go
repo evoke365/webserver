@@ -131,9 +131,9 @@ func TestTouchTok(t *testing.T) {
 	ins := NewFakeDB()
 	now := time.Now().Add(time.Minute * -1)
 	mockUser := &data.User{
-		Email:                "test@test.com",
-		Password:             "tobeencrypted",
-		Token:                "tok",
+		Email:       "test@test.com",
+		Password:    "tobeencrypted",
+		Token:       "tok",
 		TokenExpiry: now,
 	}
 
@@ -148,5 +148,32 @@ func TestTouchTok(t *testing.T) {
 
 	if !ins.isTokenValid(id) {
 		t.Fatalf("expected valid token")
+	}
+}
+
+func TestUpdatePassword(t *testing.T) {
+	ins := NewFakeDB()
+	mockUser := &data.User{
+		Email:    "test@test.com",
+		Password: "pass1",
+		Token:    "tok",
+	}
+
+	id, err := ins.InsertUser(mockUser)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := ins.UpdatePassword(id, "tok", "pass2"); err != nil {
+		t.Fatal(err)
+	}
+
+	mockUser2 := &data.User{}
+	if err := ins.GetUser(id, mockUser2); err != nil {
+		t.Fatal(err)
+	}
+
+	if mockUser2.Password != "pass2" {
+		t.Fatal("password mismatch")
 	}
 }
